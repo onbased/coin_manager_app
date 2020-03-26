@@ -119,7 +119,7 @@ paths:
       tags: [ user ]
       parameters:
         - in: body
-          name: ''
+          name: 'lr'
           schema:
             $ref: '#/definitions/LoginReq'
       responses:
