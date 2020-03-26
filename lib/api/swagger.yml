@@ -17,7 +17,7 @@ info:
 
     There are 2 types of error handling `prod` (on the production instance) and `dev` everywhere else. 
     The errors are returned as JSON except if the request header accept contains text/html
-schemes: [http, https]
+schemes: [https]
 host: coinmanager.net
 basePath: /api
 consumes:
