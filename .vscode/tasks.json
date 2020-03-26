@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Refresh api/swagger.yml",
+            "command": "curl -sSf https://coinmanager.net/swagger.yml -o ${workspaceFolder}/lib/api/swagger.yml",
+            "type": "shell",
+            "args": [],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "statusbar": {
+                    "hide": true
+                }
+            },
+        },
+        {
+            "label": "Generate api clients",
+            "command": "docker run --rm --volume ${workspaceFolder}/lib/api/generated:/src/lib --volume ${workspaceFolder}/lib/api/swagger.yml:/swagger.yml swaggerapi/swagger-codegen-cli:2.4.12 generate --lang dart --input-spec /swagger.yml --output /src --additional-properties browserClient=false",
+            "type": "shell",
+            "args": [],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "statusbar": {
+                    "hide": true
+                }
+            },
+        },
+    ]
+}
