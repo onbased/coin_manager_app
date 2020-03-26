@@ -1,0 +1,525 @@
+swagger: '2.0'
+info:
+  title: Coin manager
+  version: 0.3.0
+  description: >-
+    Planned API definition. Only operations tagged with 'Implemented' are implemented
+  
+    ## Error handling
+    
+    **400 -**     Some parameter missing / wrong type (programming error) / _Currently works only for query string parameters_
+    
+    **403 -**     Semantically worng parameter s E.g. account not found for the user
+    
+    **404 -**     the requested path not found
+
+    **422 -**     Parameter value error (syntactical error / user can fix) E.g tooShort password
+
+    There are 2 types of error handling `prod` (on the production instance) and `dev` everywhere else. 
+    The errors are returned as JSON except if the request header accept contains text/html
+schemes: [http, https]
+host: coinmanager.net
+basePath: /api
+consumes:
+  - application/x-www-form-urlencoded
+produces:
+  - application/json
+paths:
+  /trades:
+    get:
+      summary: Get open orders + their actual prices
+      operationId: openTrades
+      tags: [ trade ]
+      parameters:
+        - $ref: '#/parameters/AccountId'
+      responses:
+        200:
+          description: Open (margin)trades balances, prices
+          schema:
+            $ref: '#/definitions/AccountOrders'
+        400:
+          $ref: '#/responses/RequestError'
+        401:
+          description: Authorization information is missing or invalid.
+        403:
+          $ref: '#/responses/Error'
+        422:
+          $ref: '#/responses/ParamError'
+        500:
+          $ref: '#/responses/ServerError'
+      security:
+        - private: []
+  /funds:
+    get:
+      summary: Get funds
+      operationId: funds
+      tags: [funds]
+      parameters:
+        - name: a
+          in: query
+          type: integer
+          description: account id. If 0 or absent funds returned for all accounts the user have
+        - $ref: '#/parameters/FundType'
+      responses:
+        200:
+          description: funds
+          schema:
+            $ref: '#/definitions/Funds'
+        400:
+          $ref: '#/responses/RequestError'
+        401:
+          description: Authorization information is missing or invalid.
+        403:
+          $ref: '#/responses/Error'
+        422:
+          $ref: '#/responses/ParamError'
+        500:
+          $ref: '#/responses/ServerError'
+      security:
+        - private: []
+        
+  /me:
+    get:
+      summary: Info about the user of the actual session
+      tags: [ user]
+      responses:
+        200:
+          $ref: '#/definitions/User'
+        401:
+          description: Authorization information is missing or invalid.
+        500:
+          $ref: '#/responses/ServerError'
+    post:
+      summary: Update the user on the actual session
+      tags: [user, implemented]
+      parameters:
+        - in: body
+          name: u
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: OK empty response
+        400:
+          $ref: '#/responses/RequestError'
+        401:
+          description: Authorization information is missing or invalid.
+        403:
+          $ref: '#/responses/Error'
+        422:
+          description: Any of the required parameters are missing / wrong type or value 
+          schema:
+            $ref: '#/definitions/UserError'
+        500:
+          $ref: '#/responses/ServerError'
+  
+  /login:
+    post:
+      summary: Authenticate user and create session
+      tags: [ user ]
+      parameters:
+        - in: body
+          name: ''
+          schema:
+            $ref: '#/definitions/LoginReq'
+      responses:
+        '200':
+          description: basic user + session info
+          schema:
+            $ref: '#/definitions/SessionData'
+        '422':
+          description: User input error
+          schema:
+            $ref: '#/definitions/LoginError'
+        500:
+          $ref: '#/responses/ServerError'
+
+  /signup:
+    put:
+      summary: Create a new user
+      tags:
+        - user
+      parameters:
+        - in: body
+          name: u
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: OK empty response
+        422:
+          description: A validation error occurred
+          schema:
+            $ref: '#/definitions/UserError'
+        500:
+          $ref: '#/responses/ServerError'
+          
+  /config:
+    get:
+      summary: The common server + client configuration required by the signup / profile page
+      description: The server uses the same for parameters validation from `conf/common-config.json` See `Global.commonConfig`
+      tags: [ config, implemented ]
+      responses:
+        200:
+          description: >- 
+            Configurations: min + max length of the password special characters accepted in the password
+          schema:
+            $ref: '#/definitions/Config'
+        500:
+          $ref: '#/responses/ServerError'
+definitions:
+  Messages:
+    description: messages any response can have
+    properties:
+      info:
+        type: array
+        items:
+          type: string
+      warn:
+        type: array
+        items:
+          type: string
+
+  LoginReq:
+    required: [user, password]
+    properties:
+      user:
+        type: string
+      password:
+        type: string
+
+  SessionData:
+    description: >-
+      response after successful login accounts + basic user settings (temporally
+      contains session from cookie)
+    allOf:
+      - $ref: '#/definitions/Session'
+      - type: object
+        properties:
+          accounts:
+            $ref: '#/definitions/Accounts'
+          locale:
+            type: string
+          uiConfig:
+            type: string
+          minDispValue:
+            type: number
+            format: float
+        required: [locale, minDispValue]
+
+  Session:
+    description: Info stored in the JWT
+    required: [uid, tz, base]
+    properties:
+      uid:
+        description: userid
+        type: integer
+      tz:
+        description: timezone offset (in minutes)
+        type: integer
+      base:
+        description: base currency
+        type: string
+  FieldError:
+    description: api.FieldError
+    type: string
+    enum: [required, invalid, nonUnique, tooShort, tooLong]
+  User:
+    required: [name,email,baseCurrency,minDispVal]
+    properties:
+      email:
+        type: string
+        format: email
+      name:
+        type: string
+      pwd:
+        description: Only expected in POST. Never returned with GET
+        type: string
+      loginid:
+        type: string
+      baseCurrency:
+        type: string
+      minDispVal:
+        type: number
+        format: BigDecimal
+      tz:
+        type: string
+      locale:
+        type: string
+
+  UserError:
+    description: response if some error occured in endpoint requiring User
+    properties:
+      email:
+        $ref: '#/definitions/FieldError'
+      name:
+        $ref: '#/definitions/FieldError'
+      pwd:
+        $ref: '#/definitions/FieldError'
+      loginid:
+        $ref: '#/definitions/FieldError'
+      baseCurrency:
+        $ref: '#/definitions/FieldError'
+      minDispVal:
+        $ref: '#/definitions/FieldError'
+      tz:
+        $ref: '#/definitions/FieldError'
+      locale:
+        $ref: '#/definitions/FieldError'
+
+  Exchanges:
+    description: >-
+      <name> -> <Exchangeid>  map defined in a static server-client common
+      config.json
+    additionalProperties:
+      type: object
+      properties:
+        id:
+          type: integer
+        pairs:
+          additionalProperties:
+            type: string
+
+  AccountBase:
+    properties:
+      name:
+        type: string
+      base:
+        description: base asset
+        type: string
+    required: [name, base]
+
+  Accounts:
+    description: <accountid> -> <name> map
+    additionalProperties:
+      $ref: '#/definitions/AccountBase'
+    example:
+      '1':
+        name: Kraken
+        base: EUR
+
+  Prices:
+    description: <currency code> -> <price> map
+    additionalProperties:
+      type: number
+    example:
+      ETH: 342.3
+
+  Order:
+    required: [at, amount, price, fees]
+    properties:
+      at:
+        description: timestamp's epoch seconds in the user's timezone
+        type: integer
+        format: int64
+      amount:
+        type: number
+        format: BigDecimal
+      fees:
+        description: fees in base currency open, pos, close
+        type: array
+        items:
+          type: number
+          format: BigDecimal
+      price:
+        description: original price
+        $ref: '#/definitions/Prices'
+
+  AssetOrders:
+    description: <asset> -> Orders
+    additionalProperties:
+      type: array
+      items:
+        $ref: '#/definitions/Order'
+
+  Funds:
+    description: funds for an account
+    properties:
+      funds:
+        type: array
+        items:
+          $ref: '#/definitions/FullFund'
+      msgs:
+        $ref: '#/definitions/Messages'
+    required: [funds]
+
+  Fund:
+    description: fund
+    properties:
+      accId:
+        type: integer
+      id:
+        type: integer
+        format: int64
+      asset:
+        type: string
+      amount:
+        description: < 0 if withdrawal
+        type: number
+        format: BigDecimal
+      value:
+        description: The value in the account's base currency
+        type: number
+        format: BigDecimal
+      at:
+        description: timestamp's epoch in the user's timezone
+        type: integer
+        format: int64
+    required: [accId, id, at, asset, value, amount]
+
+  FullFund:
+    description: fund
+    allOf:
+      - $ref: '#/definitions/Fund'
+      - properties:
+          typ:
+            description: Fund type
+            type: string
+            enum: [fm,fs,f]
+          st:
+            description: status
+            type: string
+            enum: [O, C]
+          fee:
+            type: number
+            format: BigDecimal
+            description: the fee in asset
+          ooid:
+            description: the id of the matching order from other account
+            type: number
+        required: [ st, typ, fee]
+
+  AccountOrders:
+    description: orders / positions for an account
+    required: [fundSum, prices]
+    properties:
+      balances:
+        $ref: '#/definitions/Prices'
+      prices:
+        $ref: '#/definitions/Prices'
+      trades:
+        $ref: '#/definitions/AssetOrders'
+      marginTrades:
+        $ref: '#/definitions/AssetOrders'
+      fundSum:
+        description: The value deposits - withdrawals in the base currency
+        type: number
+        format: BigDecimal
+      msgs:
+        $ref: '#/definitions/Messages'
+
+  LoginError:
+    description: login error response
+    properties:
+      user:
+        $ref: '#/definitions/FieldError'
+      password:
+        $ref: '#/definitions/FieldError'
+    example:
+      user: notFound
+      password: invalid
+      '': 'Global errors'
+      
+  CfgField:
+    properties:
+      minLen:
+        type: integer
+        format: Short
+        description: 0 means the fiel can be empty
+        example: 1
+      maxLen:
+        type: integer
+        format: Short
+        example: 60
+  PwdField:
+    allOf:
+     - $ref: '#/definitions/CfgField'
+     - type: object
+       properties:
+        specChars:
+          type: string
+          description: the charaters recognized as 'special character'. one of them must be in the password value
+          example: '@$!'
+  Config:
+    properties:
+      name:
+        $ref: '#/definitions/CfgField'
+      loginid:
+        $ref: '#/definitions/CfgField'
+      email:
+        $ref: '#/definitions/CfgField'
+      password:
+        $ref: '#/definitions/PwdField'
+      displayCurrencies:
+        type: array
+        items:
+          type: string
+        example: [USD,EUR,BTC]
+parameters:
+  AccountId:
+    name: a
+    in: query
+    type: integer
+    required: true
+  FundType:
+    name: t
+    in: query
+    description: fund type
+    type: string
+    enum: [d, w]
+
+responses:
+  ServerError:
+    description: Unexpected error happened on the server. In `dev` mode more detailed information is returned
+    schema:
+      type: object
+      properties:
+        id:
+          description: the unique log id of the error in the error log
+          type: string
+      example:
+        id: adsgert
+
+  RequestError:
+    description: >-
+      Any of the required URL parameters are missing or cannot be converted to the required type. E.g. The `email` field is missing (programming error should never happen)
+    schema:
+      properties:
+        requestId:
+          type: integer
+        message:
+          type: string
+      example:
+        requestId: 123
+        message: 'Missing parameter: a'
+        
+  ParamError:
+    description: >-
+      Parameter value error
+      [parameter name] -> [error] array map. <parameter name> can be '' (empty) for generic non-parameter specific errors
+    schema:
+      additionalProperties:
+        $ref: '#/definitions/FieldError'
+      example:
+        email: 'required'
+        
+  Error:
+    description: >-
+      Handled error caused by bad parameter / conflict E.g. 
+       - account id not found for the user. 
+       - email is already registered
+    schema:
+      additionalProperties:
+        type: object
+      example:
+        AccountNotFound:
+          id: 2
+          userId: 1
+            
+securityDefinitions:
+  private:
+    type: basic
+    description: The required token is stored in the cookie in JWT format
+
+security:
+  - private: []
