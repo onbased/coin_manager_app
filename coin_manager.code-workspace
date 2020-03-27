@@ -5,12 +5,10 @@
 		}
 	],
 	"settings": {
-		"[dart]": {
-			"editor.formatOnSave": true,
-			"files.insertFinalNewline": true,
-			"files.trimFinalNewlines": true,
-			"files.trimTrailingWhitespace": true,
-		},
+		"editor.formatOnSave": true,
+		"files.insertFinalNewline": true,
+		"files.trimFinalNewlines": true,
+		"files.trimTrailingWhitespace": true,
 		"dart.flutterTrackWidgetCreation": true,
 		"dart.flutterRunLogFile": "run_flutter.log",
 	},

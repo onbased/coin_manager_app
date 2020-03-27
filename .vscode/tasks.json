@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "Refresh api/swagger.yml",
-            "command": "curl -sSf https://coinmanager.net/swagger.yml -o ${workspaceFolder}/lib/api/swagger.yml",
+            "command": "curl -sSf https://coinmanager.net/swagger.yml -o ${workspaceFolder}/lib/api/swagger.yml && echo '!!! Format the file to see the differences !!!'",
             "type": "shell",
             "args": [],
             "presentation": {

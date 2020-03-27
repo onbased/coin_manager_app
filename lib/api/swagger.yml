@@ -1,21 +1,21 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
   title: Coin manager
   version: 0.3.0
   description: >-
     Planned API definition. Only operations tagged with 'Implemented' are implemented
-  
+
     ## Error handling
-    
+
     **400 -**     Some parameter missing / wrong type (programming error) / _Currently works only for query string parameters_
-    
+
     **403 -**     Semantically worng parameter s E.g. account not found for the user
-    
+
     **404 -**     the requested path not found
 
     **422 -**     Parameter value error (syntactical error / user can fix) E.g tooShort password
 
-    There are 2 types of error handling `prod` (on the production instance) and `dev` everywhere else. 
+    There are 2 types of error handling `prod` (on the production instance) and `dev` everywhere else.
     The errors are returned as JSON except if the request header accept contains text/html
 schemes: [https]
 host: coinmanager.net
@@ -29,24 +29,24 @@ paths:
     get:
       summary: Get open orders + their actual prices
       operationId: openTrades
-      tags: [ trade ]
+      tags: [trade]
       parameters:
-        - $ref: '#/parameters/AccountId'
+        - $ref: "#/parameters/AccountId"
       responses:
         200:
           description: Open (margin)trades balances, prices
           schema:
-            $ref: '#/definitions/AccountOrders'
+            $ref: "#/definitions/AccountOrders"
         400:
-          $ref: '#/responses/RequestError'
+          $ref: "#/responses/RequestError"
         401:
           description: Authorization information is missing or invalid.
         403:
-          $ref: '#/responses/Error'
+          $ref: "#/responses/Error"
         422:
-          $ref: '#/responses/ParamError'
+          $ref: "#/responses/ParamError"
         500:
-          $ref: '#/responses/ServerError'
+          $ref: "#/responses/ServerError"
       security:
         - private: []
   /funds:
@@ -59,36 +59,36 @@ paths:
           in: query
           type: integer
           description: account id. If 0 or absent funds returned for all accounts the user have
-        - $ref: '#/parameters/FundType'
+        - $ref: "#/parameters/FundType"
       responses:
         200:
           description: funds
           schema:
-            $ref: '#/definitions/Funds'
+            $ref: "#/definitions/Funds"
         400:
-          $ref: '#/responses/RequestError'
+          $ref: "#/responses/RequestError"
         401:
           description: Authorization information is missing or invalid.
         403:
-          $ref: '#/responses/Error'
+          $ref: "#/responses/Error"
         422:
-          $ref: '#/responses/ParamError'
+          $ref: "#/responses/ParamError"
         500:
-          $ref: '#/responses/ServerError'
+          $ref: "#/responses/ServerError"
       security:
         - private: []
-        
+
   /me:
     get:
       summary: Info about the user of the actual session
-      tags: [ user]
+      tags: [user]
       responses:
         200:
-          $ref: '#/definitions/User'
+          $ref: "#/definitions/User"
         401:
           description: Authorization information is missing or invalid.
         500:
-          $ref: '#/responses/ServerError'
+          $ref: "#/responses/ServerError"
     post:
       summary: Update the user on the actual session
       tags: [user, implemented]
@@ -96,43 +96,43 @@ paths:
         - in: body
           name: u
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
       responses:
-        '200':
+        "200":
           description: OK empty response
         400:
-          $ref: '#/responses/RequestError'
+          $ref: "#/responses/RequestError"
         401:
           description: Authorization information is missing or invalid.
         403:
-          $ref: '#/responses/Error'
+          $ref: "#/responses/Error"
         422:
-          description: Any of the required parameters are missing / wrong type or value 
+          description: Any of the required parameters are missing / wrong type or value
           schema:
-            $ref: '#/definitions/UserError'
+            $ref: "#/definitions/UserError"
         500:
-          $ref: '#/responses/ServerError'
-  
+          $ref: "#/responses/ServerError"
+
   /login:
     post:
       summary: Authenticate user and create session
-      tags: [ user ]
+      tags: [user]
       parameters:
         - in: body
-          name: ''
+          name: ""
           schema:
-            $ref: '#/definitions/LoginReq'
+            $ref: "#/definitions/LoginReq"
       responses:
-        '200':
+        "200":
           description: basic user + session info
           schema:
-            $ref: '#/definitions/SessionData'
-        '422':
+            $ref: "#/definitions/SessionData"
+        "422":
           description: User input error
           schema:
-            $ref: '#/definitions/LoginError'
+            $ref: "#/definitions/LoginError"
         500:
-          $ref: '#/responses/ServerError'
+          $ref: "#/responses/ServerError"
 
   /signup:
     put:
@@ -143,30 +143,30 @@ paths:
         - in: body
           name: u
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
       responses:
         200:
           description: OK empty response
         422:
           description: A validation error occurred
           schema:
-            $ref: '#/definitions/UserError'
+            $ref: "#/definitions/UserError"
         500:
-          $ref: '#/responses/ServerError'
-          
+          $ref: "#/responses/ServerError"
+
   /config:
     get:
       summary: The common server + client configuration required by the signup / profile page
       description: The server uses the same for parameters validation from `conf/common-config.json` See `Global.commonConfig`
-      tags: [ config, implemented ]
+      tags: [config, implemented]
       responses:
         200:
-          description: >- 
+          description: >-
             Configurations: min + max length of the password special characters accepted in the password
           schema:
-            $ref: '#/definitions/Config'
+            $ref: "#/definitions/Config"
         500:
-          $ref: '#/responses/ServerError'
+          $ref: "#/responses/ServerError"
 definitions:
   Messages:
     description: messages any response can have
@@ -193,11 +193,11 @@ definitions:
       response after successful login accounts + basic user settings (temporally
       contains session from cookie)
     allOf:
-      - $ref: '#/definitions/Session'
+      - $ref: "#/definitions/Session"
       - type: object
         properties:
           accounts:
-            $ref: '#/definitions/Accounts'
+            $ref: "#/definitions/Accounts"
           locale:
             type: string
           uiConfig:
@@ -225,7 +225,7 @@ definitions:
     type: string
     enum: [required, invalid, nonUnique, tooShort, tooLong]
   User:
-    required: [name,email,baseCurrency,minDispVal]
+    required: [name, email, baseCurrency, minDispVal]
     properties:
       email:
         type: string
@@ -251,21 +251,21 @@ definitions:
     description: response if some error occured in endpoint requiring User
     properties:
       email:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       name:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       pwd:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       loginid:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       baseCurrency:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       minDispVal:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       tz:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       locale:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
 
   Exchanges:
     description: >-
@@ -292,9 +292,9 @@ definitions:
   Accounts:
     description: <accountid> -> <name> map
     additionalProperties:
-      $ref: '#/definitions/AccountBase'
+      $ref: "#/definitions/AccountBase"
     example:
-      '1':
+      "1":
         name: Kraken
         base: EUR
 
@@ -323,14 +323,14 @@ definitions:
           format: BigDecimal
       price:
         description: original price
-        $ref: '#/definitions/Prices'
+        $ref: "#/definitions/Prices"
 
   AssetOrders:
     description: <asset> -> Orders
     additionalProperties:
       type: array
       items:
-        $ref: '#/definitions/Order'
+        $ref: "#/definitions/Order"
 
   Funds:
     description: funds for an account
@@ -338,9 +338,9 @@ definitions:
       funds:
         type: array
         items:
-          $ref: '#/definitions/FullFund'
+          $ref: "#/definitions/FullFund"
       msgs:
-        $ref: '#/definitions/Messages'
+        $ref: "#/definitions/Messages"
     required: [funds]
 
   Fund:
@@ -370,12 +370,12 @@ definitions:
   FullFund:
     description: fund
     allOf:
-      - $ref: '#/definitions/Fund'
+      - $ref: "#/definitions/Fund"
       - properties:
           typ:
             description: Fund type
             type: string
-            enum: [fm,fs,f]
+            enum: [fm, fs, f]
           st:
             description: status
             type: string
@@ -387,39 +387,39 @@ definitions:
           ooid:
             description: the id of the matching order from other account
             type: number
-        required: [ st, typ, fee]
+        required: [st, typ, fee]
 
   AccountOrders:
     description: orders / positions for an account
     required: [fundSum, prices]
     properties:
       balances:
-        $ref: '#/definitions/Prices'
+        $ref: "#/definitions/Prices"
       prices:
-        $ref: '#/definitions/Prices'
+        $ref: "#/definitions/Prices"
       trades:
-        $ref: '#/definitions/AssetOrders'
+        $ref: "#/definitions/AssetOrders"
       marginTrades:
-        $ref: '#/definitions/AssetOrders'
+        $ref: "#/definitions/AssetOrders"
       fundSum:
         description: The value deposits - withdrawals in the base currency
         type: number
         format: BigDecimal
       msgs:
-        $ref: '#/definitions/Messages'
+        $ref: "#/definitions/Messages"
 
   LoginError:
     description: login error response
     properties:
       user:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       password:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
     example:
       user: notFound
       password: invalid
-      '': 'Global errors'
-      
+      "": "Global errors"
+
   CfgField:
     properties:
       minLen:
@@ -433,28 +433,28 @@ definitions:
         example: 60
   PwdField:
     allOf:
-     - $ref: '#/definitions/CfgField'
-     - type: object
-       properties:
-        specChars:
-          type: string
-          description: the charaters recognized as 'special character'. one of them must be in the password value
-          example: '@$!'
+      - $ref: "#/definitions/CfgField"
+      - type: object
+        properties:
+          specChars:
+            type: string
+            description: the charaters recognized as 'special character'. one of them must be in the password value
+            example: "@$!"
   Config:
     properties:
       name:
-        $ref: '#/definitions/CfgField'
+        $ref: "#/definitions/CfgField"
       loginid:
-        $ref: '#/definitions/CfgField'
+        $ref: "#/definitions/CfgField"
       email:
-        $ref: '#/definitions/CfgField'
+        $ref: "#/definitions/CfgField"
       password:
-        $ref: '#/definitions/PwdField'
+        $ref: "#/definitions/PwdField"
       displayCurrencies:
         type: array
         items:
           type: string
-        example: [USD,EUR,BTC]
+        example: [USD, EUR, BTC]
 parameters:
   AccountId:
     name: a
@@ -491,22 +491,22 @@ responses:
           type: string
       example:
         requestId: 123
-        message: 'Missing parameter: a'
-        
+        message: "Missing parameter: a"
+
   ParamError:
     description: >-
       Parameter value error
       [parameter name] -> [error] array map. <parameter name> can be '' (empty) for generic non-parameter specific errors
     schema:
       additionalProperties:
-        $ref: '#/definitions/FieldError'
+        $ref: "#/definitions/FieldError"
       example:
-        email: 'required'
-        
+        email: "required"
+
   Error:
     description: >-
-      Handled error caused by bad parameter / conflict E.g. 
-       - account id not found for the user. 
+      Handled error caused by bad parameter / conflict E.g.
+       - account id not found for the user.
        - email is already registered
     schema:
       additionalProperties:
@@ -515,7 +515,7 @@ responses:
         AccountNotFound:
           id: 2
           userId: 1
-            
+
 securityDefinitions:
   private:
     type: basic
