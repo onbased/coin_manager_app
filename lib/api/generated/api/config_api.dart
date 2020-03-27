@@ -1,4 +1,4 @@
-part of swagger.api;
+part of openapi.api;
 
 
 
@@ -7,11 +7,11 @@ class ConfigApi {
 
   ConfigApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
-  /// The common server + client configuration required by the signup / profile page
+  /// The common server + client configuration required by the signup / profile page with HTTP info returned
   ///
   /// The server uses the same for parameters validation from &#x60;conf/common-config.json&#x60; See &#x60;Global.commonConfig&#x60;
-  Future<Config> configGet() async {
-    Object postBody = null;
+  Future<Response> configGetWithHttpInfo() async {
+    Object postBody;
 
     // verify required params are set
 
@@ -22,21 +22,20 @@ class ConfigApi {
     List<QueryParam> queryParams = [];
     Map<String, String> headerParams = {};
     Map<String, String> formParams = {};
-    
-    List<String> contentTypes = ["application/json"];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    List<String> contentTypes = [];
+
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["private"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
     else {
-          }
+    }
 
     var response = await apiClient.invokeAPI(path,
                                              'GET',
@@ -46,14 +45,21 @@ class ConfigApi {
                                              formParams,
                                              contentType,
                                              authNames);
+    return response;
+  }
 
+  /// The common server + client configuration required by the signup / profile page
+  ///
+  /// The server uses the same for parameters validation from &#x60;conf/common-config.json&#x60; See &#x60;Global.commonConfig&#x60;
+  Future<Config> configGet() async {
+    Response response = await configGetWithHttpInfo();
     if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
     } else if(response.body != null) {
-      return 
-          apiClient.deserialize(response.body, 'Config') as Config ;
+      return apiClient.deserialize(_decodeBodyBytes(response), 'Config') as Config;
     } else {
       return null;
     }
   }
+
 }

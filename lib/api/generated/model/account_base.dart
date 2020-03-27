@@ -1,12 +1,10 @@
-part of swagger.api;
+part of openapi.api;
 
 class AccountBase {
   
   String name = null;
-  
-/* base asset */
+  /* base asset */
   String base = null;
-  
   AccountBase();
 
   @override
@@ -16,31 +14,40 @@ class AccountBase {
 
   AccountBase.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
-    name =
-        json['name']
-    ;
-    base =
-        json['base']
-    ;
+    name = json['name'];
+    base = json['base'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'base': base
-     };
+    Map <String, dynamic> json = {};
+    if (name != null)
+      json['name'] = name;
+    if (base != null)
+      json['base'] = base;
+    return json;
   }
 
   static List<AccountBase> listFromJson(List<dynamic> json) {
-    return json == null ? new List<AccountBase>() : json.map((value) => new AccountBase.fromJson(value)).toList();
+    return json == null ? List<AccountBase>() : json.map((value) => AccountBase.fromJson(value)).toList();
   }
 
-  static Map<String, AccountBase> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, AccountBase>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new AccountBase.fromJson(value));
+  static Map<String, AccountBase> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, AccountBase>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = AccountBase.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of AccountBase-objects as value to a dart map
+  static Map<String, List<AccountBase>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<AccountBase>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = AccountBase.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

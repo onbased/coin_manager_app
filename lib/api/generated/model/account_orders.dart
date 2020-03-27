@@ -1,24 +1,18 @@
-part of swagger.api;
+part of openapi.api;
 
 class AccountOrders {
-  
-  Prices balances = null;
-  
-
-  Prices prices = null;
-  
-
-  AssetOrders trades = null;
-  
-
-  AssetOrders marginTrades = null;
-  
-/* The value deposits - withdrawals in the base currency */
+  /* <currency code> -> <price> map */
+  Map<String, num> balances = {};
+  /* <currency code> -> <price> map */
+  Map<String, num> prices = {};
+  /* <asset> -> Orders */
+  Map<String, List<Order>> trades = {};
+  /* <asset> -> Orders */
+  Map<String, List<Order>> marginTrades = {};
+  /* The value deposits - withdrawals in the base currency */
   num fundSum = null;
   
-
   Messages msgs = null;
-  
   AccountOrders();
 
   @override
@@ -28,57 +22,62 @@ class AccountOrders {
 
   AccountOrders.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
-    balances =
-      
-      
-      new Prices.fromJson(json['balances'])
-;
-    prices =
-      
-      
-      new Prices.fromJson(json['prices'])
-;
-    trades =
-      
-      
-      new AssetOrders.fromJson(json['trades'])
-;
-    marginTrades =
-      
-      
-      new AssetOrders.fromJson(json['marginTrades'])
-;
-    fundSum =
-        json['fundSum']
-    ;
-    msgs =
-      
-      
-      new Messages.fromJson(json['msgs'])
-;
+    balances = (json['balances'] == null) ?
+      null :
+      (json['balances'] as Map).cast<String, num>();
+    prices = (json['prices'] == null) ?
+      null :
+      (json['prices'] as Map).cast<String, num>();
+    trades = (json['trades'] == null) ?
+      null :
+      Order.mapListFromJson(json['trades']);
+    marginTrades = (json['marginTrades'] == null) ?
+      null :
+      Order.mapListFromJson(json['marginTrades']);
+    fundSum = json['fundSum'];
+    msgs = (json['msgs'] == null) ?
+      null :
+      Messages.fromJson(json['msgs']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'balances': balances,
-      'prices': prices,
-      'trades': trades,
-      'marginTrades': marginTrades,
-      'fundSum': fundSum,
-      'msgs': msgs
-     };
+    Map <String, dynamic> json = {};
+    if (balances != null)
+      json['balances'] = balances;
+    if (prices != null)
+      json['prices'] = prices;
+    if (trades != null)
+      json['trades'] = trades;
+    if (marginTrades != null)
+      json['marginTrades'] = marginTrades;
+    if (fundSum != null)
+      json['fundSum'] = fundSum;
+    if (msgs != null)
+      json['msgs'] = msgs;
+    return json;
   }
 
   static List<AccountOrders> listFromJson(List<dynamic> json) {
-    return json == null ? new List<AccountOrders>() : json.map((value) => new AccountOrders.fromJson(value)).toList();
+    return json == null ? List<AccountOrders>() : json.map((value) => AccountOrders.fromJson(value)).toList();
   }
 
-  static Map<String, AccountOrders> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, AccountOrders>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new AccountOrders.fromJson(value));
+  static Map<String, AccountOrders> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, AccountOrders>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = AccountOrders.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of AccountOrders-objects as value to a dart map
+  static Map<String, List<AccountOrders>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<AccountOrders>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = AccountOrders.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

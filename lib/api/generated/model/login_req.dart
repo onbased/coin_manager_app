@@ -1,12 +1,10 @@
-part of swagger.api;
+part of openapi.api;
 
 class LoginReq {
   
   String user = null;
   
-
   String password = null;
-  
   LoginReq();
 
   @override
@@ -16,31 +14,40 @@ class LoginReq {
 
   LoginReq.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
-    user =
-        json['user']
-    ;
-    password =
-        json['password']
-    ;
+    user = json['user'];
+    password = json['password'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'user': user,
-      'password': password
-     };
+    Map <String, dynamic> json = {};
+    if (user != null)
+      json['user'] = user;
+    if (password != null)
+      json['password'] = password;
+    return json;
   }
 
   static List<LoginReq> listFromJson(List<dynamic> json) {
-    return json == null ? new List<LoginReq>() : json.map((value) => new LoginReq.fromJson(value)).toList();
+    return json == null ? List<LoginReq>() : json.map((value) => LoginReq.fromJson(value)).toList();
   }
 
-  static Map<String, LoginReq> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, LoginReq>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new LoginReq.fromJson(value));
+  static Map<String, LoginReq> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, LoginReq>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = LoginReq.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of LoginReq-objects as value to a dart map
+  static Map<String, List<LoginReq>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<LoginReq>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = LoginReq.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

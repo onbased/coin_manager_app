@@ -19,7 +19,7 @@
         },
         {
             "label": "Generate api clients",
-            "command": "docker run --rm --volume ${workspaceFolder}/lib/api/generated:/src/lib --volume ${workspaceFolder}/lib/api/swagger.yml:/swagger.yml swaggerapi/swagger-codegen-cli:2.4.12 generate --lang dart --input-spec /swagger.yml --output /src --additional-properties browserClient=false",
+            "command": "docker run --rm --volume ${workspaceFolder}/lib/api/generated:/src/lib --volume ${workspaceFolder}/lib/api/swagger.yml:/swagger.yml openapitools/openapi-generator-cli:v4.3.0 generate --generator-name dart --input-spec /swagger.yml --output /src",
             "type": "shell",
             "args": [],
             "presentation": {

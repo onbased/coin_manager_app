@@ -1,12 +1,10 @@
-part of swagger.api;
+part of openapi.api;
 
 class CfgField {
   /* 0 means the fiel can be empty */
   int minLen = null;
   
-
   int maxLen = null;
-  
   CfgField();
 
   @override
@@ -16,31 +14,40 @@ class CfgField {
 
   CfgField.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
-    minLen =
-        json['minLen']
-    ;
-    maxLen =
-        json['maxLen']
-    ;
+    minLen = json['minLen'];
+    maxLen = json['maxLen'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'minLen': minLen,
-      'maxLen': maxLen
-     };
+    Map <String, dynamic> json = {};
+    if (minLen != null)
+      json['minLen'] = minLen;
+    if (maxLen != null)
+      json['maxLen'] = maxLen;
+    return json;
   }
 
   static List<CfgField> listFromJson(List<dynamic> json) {
-    return json == null ? new List<CfgField>() : json.map((value) => new CfgField.fromJson(value)).toList();
+    return json == null ? List<CfgField>() : json.map((value) => CfgField.fromJson(value)).toList();
   }
 
-  static Map<String, CfgField> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, CfgField>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new CfgField.fromJson(value));
+  static Map<String, CfgField> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, CfgField>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = CfgField.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of CfgField-objects as value to a dart map
+  static Map<String, List<CfgField>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<CfgField>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = CfgField.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

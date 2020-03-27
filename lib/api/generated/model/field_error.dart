@@ -1,35 +1,42 @@
-part of swagger.api;
+part of openapi.api;
 
 class FieldError {
   /// The underlying value of this enum member.
-  String value;
+  final String value;
 
-  FieldError._internal(this.value);
+  const FieldError._internal(this.value);
 
   /// api.FieldError
-  static FieldError required_ = FieldError._internal("required");
+  static const FieldError required_ = const FieldError._internal("required");
   /// api.FieldError
-  static FieldError invalid_ = FieldError._internal("invalid");
+  static const FieldError invalid_ = const FieldError._internal("invalid");
   /// api.FieldError
-  static FieldError nonUnique_ = FieldError._internal("nonUnique");
+  static const FieldError nonUnique_ = const FieldError._internal("nonUnique");
   /// api.FieldError
-  static FieldError tooShort_ = FieldError._internal("tooShort");
+  static const FieldError tooShort_ = const FieldError._internal("tooShort");
   /// api.FieldError
-  static FieldError tooLong_ = FieldError._internal("tooLong");
+  static const FieldError tooLong_ = const FieldError._internal("tooLong");
 
-  FieldError.fromJson(dynamic data) {
-    switch (data) {
-          case "required": value = data; break;
-          case "invalid": value = data; break;
-          case "nonUnique": value = data; break;
-          case "tooShort": value = data; break;
-          case "tooLong": value = data; break;
-    default: throw('Unknown enum value to decode: $data');
-    }
+  static FieldError fromJson(String value) {
+    return new FieldErrorTypeTransformer().decode(value);
+  }
+}
+
+class FieldErrorTypeTransformer {
+
+  dynamic encode(FieldError data) {
+    return data.value;
   }
 
-  static dynamic encode(FieldError data) {
-    return data.value;
+  FieldError decode(dynamic data) {
+    switch (data) {
+      case "required": return FieldError.required_;
+      case "invalid": return FieldError.invalid_;
+      case "nonUnique": return FieldError.nonUnique_;
+      case "tooShort": return FieldError.tooShort_;
+      case "tooLong": return FieldError.tooLong_;
+      default: throw('Unknown enum value to decode: $data');
+    }
   }
 }
 

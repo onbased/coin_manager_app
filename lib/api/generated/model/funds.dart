@@ -1,12 +1,10 @@
-part of swagger.api;
+part of openapi.api;
 
 class Funds {
   
   List<FullFund> funds = [];
   
-
   Messages msgs = null;
-  
   Funds();
 
   @override
@@ -16,33 +14,44 @@ class Funds {
 
   Funds.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
-    funds =
-      FullFund.listFromJson(json['funds'])
-;
-    msgs =
-      
-      
-      new Messages.fromJson(json['msgs'])
-;
+    funds = (json['funds'] == null) ?
+      null :
+      FullFund.listFromJson(json['funds']);
+    msgs = (json['msgs'] == null) ?
+      null :
+      Messages.fromJson(json['msgs']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'funds': funds,
-      'msgs': msgs
-     };
+    Map <String, dynamic> json = {};
+    if (funds != null)
+      json['funds'] = funds;
+    if (msgs != null)
+      json['msgs'] = msgs;
+    return json;
   }
 
   static List<Funds> listFromJson(List<dynamic> json) {
-    return json == null ? new List<Funds>() : json.map((value) => new Funds.fromJson(value)).toList();
+    return json == null ? List<Funds>() : json.map((value) => Funds.fromJson(value)).toList();
   }
 
-  static Map<String, Funds> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, Funds>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new Funds.fromJson(value));
+  static Map<String, Funds> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, Funds>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = Funds.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of Funds-objects as value to a dart map
+  static Map<String, List<Funds>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<Funds>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = Funds.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

@@ -1,4 +1,4 @@
-part of swagger.api;
+part of openapi.api;
 
 class QueryParam {
   String name;
@@ -10,17 +10,17 @@ class QueryParam {
 class ApiClient {
 
   String basePath;
-  var client = new Client();
+  var client = Client();
 
   Map<String, String> _defaultHeaderMap = {};
   Map<String, Authentication> _authentications = {};
 
-  final _RegList = new RegExp(r'^List<(.*)>$');
-  final _RegMap = new RegExp(r'^Map<String,(.*)>$');
+  final _regList = RegExp(r'^List<(.*)>$');
+  final _regMap = RegExp(r'^Map<String,(.*)>$');
 
-  ApiClient({this.basePath: "https://coinmanager.net/api"}) {
+  ApiClient({this.basePath = "https://coinmanager.net/api"}) {
     // Setup authentications (key: authentication name, value: authentication).
-    _authentications['private'] = new HttpBasicAuth();
+    _authentications['private'] = HttpBasicAuth();
   }
 
   void addDefaultHeader(String key, String value) {
@@ -39,77 +39,75 @@ class ApiClient {
         case 'double':
           return value is double ? value : double.parse('$value');
         case 'AccountBase':
-          return new AccountBase.fromJson(value);
+          return AccountBase.fromJson(value);
         case 'AccountOrders':
-          return new AccountOrders.fromJson(value);
-        case 'Accounts':
-          return new Accounts.fromJson(value);
-        case 'AssetOrders':
-          return new AssetOrders.fromJson(value);
+          return AccountOrders.fromJson(value);
         case 'CfgField':
-          return new CfgField.fromJson(value);
+          return CfgField.fromJson(value);
         case 'Config':
-          return new Config.fromJson(value);
-        case 'Exchanges':
-          return new Exchanges.fromJson(value);
+          return Config.fromJson(value);
         case 'FieldError':
-           return new FieldError.fromJson(value);
-        case 'Fund':
-          return new Fund.fromJson(value);
-        case 'Funds':
-          return new Funds.fromJson(value);
-        case 'InlineResponse500':
-          return new InlineResponse500.fromJson(value);
-        case 'LoginError':
-          return new LoginError.fromJson(value);
-        case 'LoginReq':
-          return new LoginReq.fromJson(value);
-        case 'Messages':
-          return new Messages.fromJson(value);
-        case 'Order':
-          return new Order.fromJson(value);
-        case 'Prices':
-          return new Prices.fromJson(value);
-        case 'Session':
-          return new Session.fromJson(value);
-        case 'User':
-          return new User.fromJson(value);
-        case 'UserError':
-          return new UserError.fromJson(value);
+          return new FieldErrorTypeTransformer().decode(value);
         case 'FullFund':
-          return new FullFund.fromJson(value);
+          return FullFund.fromJson(value);
+        case 'FullFundAllOf':
+          return FullFundAllOf.fromJson(value);
+        case 'Fund':
+          return Fund.fromJson(value);
+        case 'Funds':
+          return Funds.fromJson(value);
+        case 'InlineResponse500':
+          return InlineResponse500.fromJson(value);
+        case 'LoginError':
+          return LoginError.fromJson(value);
+        case 'LoginReq':
+          return LoginReq.fromJson(value);
+        case 'Messages':
+          return Messages.fromJson(value);
+        case 'Order':
+          return Order.fromJson(value);
         case 'PwdField':
-          return new PwdField.fromJson(value);
+          return PwdField.fromJson(value);
+        case 'PwdFieldAllOf':
+          return PwdFieldAllOf.fromJson(value);
+        case 'Session':
+          return Session.fromJson(value);
         case 'SessionData':
-          return new SessionData.fromJson(value);
+          return SessionData.fromJson(value);
+        case 'SessionDataAllOf':
+          return SessionDataAllOf.fromJson(value);
+        case 'User':
+          return User.fromJson(value);
+        case 'UserError':
+          return UserError.fromJson(value);
         default:
           {
             Match match;
             if (value is List &&
-                (match = _RegList.firstMatch(targetType)) != null) {
+                (match = _regList.firstMatch(targetType)) != null) {
               var newTargetType = match[1];
               return value.map((v) => _deserialize(v, newTargetType)).toList();
             } else if (value is Map &&
-                (match = _RegMap.firstMatch(targetType)) != null) {
+                (match = _regMap.firstMatch(targetType)) != null) {
               var newTargetType = match[1];
-              return new Map.fromIterables(value.keys,
+              return Map.fromIterables(value.keys,
                   value.values.map((v) => _deserialize(v, newTargetType)));
             }
           }
       }
-    } catch (e, stack) {
-      throw new ApiException.withInner(500, 'Exception during deserialization.', e, stack);
+    } on Exception catch (e, stack) {
+      throw ApiException.withInner(500, 'Exception during deserialization.', e, stack);
     }
-    throw new ApiException(500, 'Could not find a suitable class for deserialization');
+    throw ApiException(500, 'Could not find a suitable class for deserialization');
   }
 
-  dynamic deserialize(String jsonVal, String targetType) {
+  dynamic deserialize(String json, String targetType) {
     // Remove all spaces.  Necessary for reg expressions as well.
     targetType = targetType.replaceAll(' ', '');
 
-    if (targetType == 'String') return jsonVal;
+    if (targetType == 'String') return json;
 
-    var decodedJson = json.decode(jsonVal);
+    var decodedJson = jsonDecode(json);
     return _deserialize(decodedJson, targetType);
   }
 
@@ -136,7 +134,10 @@ class ApiClient {
 
     _updateParamsForAuth(authNames, queryParams, headerParams);
 
-    var ps = queryParams.where((p) => p.value != null).map((p) => '${p.name}=${p.value}');
+    var ps = queryParams
+      .where((p) => p.value != null)
+      .map((p) => '${p.name}=${Uri.encodeQueryComponent(p.value)}');
+
     String queryString = ps.isNotEmpty ?
                          '?' + ps.join('&') :
                          '';
@@ -147,7 +148,7 @@ class ApiClient {
     headerParams['Content-Type'] = contentType;
 
     if(body is MultipartRequest) {
-      var request = new MultipartRequest(method, Uri.parse(url));
+      var request = MultipartRequest(method, Uri.parse(url));
       request.fields.addAll(body.fields);
       request.files.addAll(body.files);
       request.headers.addAll(body.headers);
@@ -165,6 +166,8 @@ class ApiClient {
           return client.delete(url, headers: headerParams);
         case "PATCH":
           return client.patch(url, headers: headerParams, body: msgBody);
+        case "HEAD":
+          return client.head(url, headers: headerParams);
         default:
           return client.get(url, headers: headerParams);
       }
@@ -176,16 +179,14 @@ class ApiClient {
   void _updateParamsForAuth(List<String> authNames, List<QueryParam> queryParams, Map<String, String> headerParams) {
     authNames.forEach((authName) {
       Authentication auth = _authentications[authName];
-      if (auth == null) throw new ArgumentError("Authentication undefined: " + authName);
+      if (auth == null) throw ArgumentError("Authentication undefined: " + authName);
       auth.applyToParams(queryParams, headerParams);
     });
   }
 
-  void setAccessToken(String accessToken) {
-    _authentications.forEach((key, auth) {
-      if (auth is OAuth) {
-        auth.setAccessToken(accessToken);
-      }
-    });
+  T getAuthentication<T extends Authentication>(String name) {
+    var authentication = _authentications[name];
+
+    return authentication is T ? authentication : null;
   }
 }

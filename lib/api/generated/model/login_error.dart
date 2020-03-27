@@ -1,12 +1,12 @@
-part of swagger.api;
+part of openapi.api;
 
 class LoginError {
   
   FieldError user = null;
+  //enum userEnum {  required,  invalid,  nonUnique,  tooShort,  tooLong,  };{
   
-
   FieldError password = null;
-  
+  //enum passwordEnum {  required,  invalid,  nonUnique,  tooShort,  tooLong,  };{
   LoginError();
 
   @override
@@ -16,35 +16,44 @@ class LoginError {
 
   LoginError.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
-    user =
-      
-      
-      new FieldError.fromJson(json['user'])
-;
-    password =
-      
-      
-      new FieldError.fromJson(json['password'])
-;
+    user = (json['user'] == null) ?
+      null :
+      FieldError.fromJson(json['user']);
+    password = (json['password'] == null) ?
+      null :
+      FieldError.fromJson(json['password']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'user': user,
-      'password': password
-     };
+    Map <String, dynamic> json = {};
+    if (user != null)
+      json['user'] = user;
+    if (password != null)
+      json['password'] = password;
+    return json;
   }
 
   static List<LoginError> listFromJson(List<dynamic> json) {
-    return json == null ? new List<LoginError>() : json.map((value) => new LoginError.fromJson(value)).toList();
+    return json == null ? List<LoginError>() : json.map((value) => LoginError.fromJson(value)).toList();
   }
 
-  static Map<String, LoginError> mapFromJson(Map<String, Map<String, dynamic>> json) {
-    var map = new Map<String, LoginError>();
-    if (json != null && json.length > 0) {
-      json.forEach((String key, Map<String, dynamic> value) => map[key] = new LoginError.fromJson(value));
+  static Map<String, LoginError> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, LoginError>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = LoginError.fromJson(value));
     }
     return map;
+  }
+
+  // maps a json object with a list of LoginError-objects as value to a dart map
+  static Map<String, List<LoginError>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<LoginError>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = LoginError.listFromJson(value);
+       });
+     }
+     return map;
   }
 }
 

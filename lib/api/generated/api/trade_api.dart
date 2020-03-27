@@ -1,4 +1,4 @@
-part of swagger.api;
+part of openapi.api;
 
 
 
@@ -7,15 +7,15 @@ class TradeApi {
 
   TradeApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
-  /// Get open orders + their actual prices
+  /// Get open orders + their actual prices with HTTP info returned
   ///
   /// 
-  Future<AccountOrders> openTrades(int a) async {
-    Object postBody = null;
+  Future<Response> openTradesWithHttpInfo(int a) async {
+    Object postBody;
 
     // verify required params are set
     if(a == null) {
-     throw new ApiException(400, "Missing required param: a");
+     throw ApiException(400, "Missing required param: a");
     }
 
     // create path and map variables
@@ -26,21 +26,20 @@ class TradeApi {
     Map<String, String> headerParams = {};
     Map<String, String> formParams = {};
       queryParams.addAll(_convertParametersForCollectionFormat("", "a", a));
-    
-    List<String> contentTypes = ["application/json"];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    List<String> contentTypes = [];
+
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["private"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
     else {
-          }
+    }
 
     var response = await apiClient.invokeAPI(path,
                                              'GET',
@@ -50,14 +49,21 @@ class TradeApi {
                                              formParams,
                                              contentType,
                                              authNames);
+    return response;
+  }
 
+  /// Get open orders + their actual prices
+  ///
+  /// 
+  Future<AccountOrders> openTrades(int a) async {
+    Response response = await openTradesWithHttpInfo(a);
     if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
     } else if(response.body != null) {
-      return 
-          apiClient.deserialize(response.body, 'AccountOrders') as AccountOrders ;
+      return apiClient.deserialize(_decodeBodyBytes(response), 'AccountOrders') as AccountOrders;
     } else {
       return null;
     }
   }
+
 }

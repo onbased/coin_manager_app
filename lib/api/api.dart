@@ -9,6 +9,7 @@ export 'generated/api.dart' hide ApiClient;
 void initSessionHandling() => gen.defaultApiClient = ApiClient();
 
 class ApiClient extends gen.ApiClient {
+  static const List<String> httpMethodsWithBody = ['POST', 'PUT', 'PATCH'];
   final String sessionCookieName;
   String _sessionCookie;
 
@@ -30,7 +31,8 @@ class ApiClient extends gen.ApiClient {
     headerParams =
         _setSessionCookieToRequestHeaders(headerParams, _sessionCookie);
 
-    if (method == 'GET') contentType = 'application/octet-stream';
+    if (!httpMethodsWithBody.contains(method))
+      contentType = 'application/octet-stream';
 
     Response response = await super.invokeAPI(path, method, queryParams, body,
         headerParams, formParams, contentType, authNames);

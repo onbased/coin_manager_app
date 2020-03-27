@@ -1,4 +1,4 @@
-library swagger.api;
+library openapi.api;
 
 import 'dart:async';
 import 'dart:convert';
@@ -20,12 +20,11 @@ part 'api/user_api.dart';
 
 part 'model/account_base.dart';
 part 'model/account_orders.dart';
-part 'model/accounts.dart';
-part 'model/asset_orders.dart';
 part 'model/cfg_field.dart';
 part 'model/config.dart';
-part 'model/exchanges.dart';
 part 'model/field_error.dart';
+part 'model/full_fund.dart';
+part 'model/full_fund_all_of.dart';
 part 'model/fund.dart';
 part 'model/funds.dart';
 part 'model/inline_response500.dart';
@@ -33,13 +32,13 @@ part 'model/login_error.dart';
 part 'model/login_req.dart';
 part 'model/messages.dart';
 part 'model/order.dart';
-part 'model/prices.dart';
+part 'model/pwd_field.dart';
+part 'model/pwd_field_all_of.dart';
 part 'model/session.dart';
+part 'model/session_data.dart';
+part 'model/session_data_all_of.dart';
 part 'model/user.dart';
 part 'model/user_error.dart';
-part 'model/full_fund.dart';
-part 'model/pwd_field.dart';
-part 'model/session_data.dart';
 
 
-ApiClient defaultApiClient = new ApiClient();
+ApiClient defaultApiClient = ApiClient();

@@ -1,4 +1,4 @@
-part of swagger.api;
+part of openapi.api;
 
 
 
@@ -7,11 +7,11 @@ class FundsApi {
 
   FundsApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
-  /// Get funds
+  /// Get funds with HTTP info returned
   ///
   /// 
-  Future<Funds> funds({ int a, String t }) async {
-    Object postBody = null;
+  Future<Response> fundsWithHttpInfo({ int a, String t }) async {
+    Object postBody;
 
     // verify required params are set
 
@@ -28,21 +28,20 @@ class FundsApi {
     if(t != null) {
       queryParams.addAll(_convertParametersForCollectionFormat("", "t", t));
     }
-    
-    List<String> contentTypes = ["application/json"];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    List<String> contentTypes = [];
+
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["private"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
     else {
-          }
+    }
 
     var response = await apiClient.invokeAPI(path,
                                              'GET',
@@ -52,14 +51,21 @@ class FundsApi {
                                              formParams,
                                              contentType,
                                              authNames);
+    return response;
+  }
 
+  /// Get funds
+  ///
+  /// 
+  Future<Funds> funds({ int a, String t }) async {
+    Response response = await fundsWithHttpInfo( a: a, t: t );
     if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
     } else if(response.body != null) {
-      return 
-          apiClient.deserialize(response.body, 'Funds') as Funds ;
+      return apiClient.deserialize(_decodeBodyBytes(response), 'Funds') as Funds;
     } else {
       return null;
     }
   }
+
 }

@@ -1,4 +1,4 @@
-part of swagger.api;
+part of openapi.api;
 
 
 
@@ -7,11 +7,11 @@ class UserApi {
 
   UserApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
-  /// Authenticate user and create session
+  /// Authenticate user and create session with HTTP info returned
   ///
   /// 
-  Future<SessionData> loginPost({ LoginReq lr }) async {
-    Object postBody = lr;
+  Future<Response> loginPostWithHttpInfo({ LoginReq loginReq }) async {
+    Object postBody = loginReq;
 
     // verify required params are set
 
@@ -22,21 +22,20 @@ class UserApi {
     List<QueryParam> queryParams = [];
     Map<String, String> headerParams = {};
     Map<String, String> formParams = {};
-    
+
     List<String> contentTypes = ["application/json"];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["private"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
     else {
-          }
+    }
 
     var response = await apiClient.invokeAPI(path,
                                              'POST',
@@ -46,21 +45,28 @@ class UserApi {
                                              formParams,
                                              contentType,
                                              authNames);
+    return response;
+  }
 
+  /// Authenticate user and create session
+  ///
+  /// 
+  Future<SessionData> loginPost({ LoginReq loginReq }) async {
+    Response response = await loginPostWithHttpInfo( loginReq: loginReq );
     if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
     } else if(response.body != null) {
-      return 
-          apiClient.deserialize(response.body, 'SessionData') as SessionData ;
+      return apiClient.deserialize(_decodeBodyBytes(response), 'SessionData') as SessionData;
     } else {
       return null;
     }
   }
-  /// Info about the user of the actual session
+
+  /// Info about the user of the actual session with HTTP info returned
   ///
   /// 
-  Future meGet() async {
-    Object postBody = null;
+  Future meGetWithHttpInfo() async {
+    Object postBody;
 
     // verify required params are set
 
@@ -71,21 +77,20 @@ class UserApi {
     List<QueryParam> queryParams = [];
     Map<String, String> headerParams = {};
     Map<String, String> formParams = {};
-    
-    List<String> contentTypes = ["application/json"];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    List<String> contentTypes = [];
+
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["private"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
     else {
-          }
+    }
 
     var response = await apiClient.invokeAPI(path,
                                              'GET',
@@ -95,20 +100,26 @@ class UserApi {
                                              formParams,
                                              contentType,
                                              authNames);
-
-    if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
-    } else if(response.body != null) {
-      return 
-          ;
-    } else {
-      return ;
-    }
+    return response;
   }
-  /// Update the user on the actual session
+
+  /// Info about the user of the actual session
   ///
   /// 
-  Future mePost({ User u }) async {
+  Future meGet() async {
+    Response response = await meGetWithHttpInfo();
+    if(response.statusCode >= 400) {
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
+    } else if(response.body != null) {
+    } else {
+      return;
+    }
+  }
+
+  /// Update the user on the actual session with HTTP info returned
+  ///
+  /// 
+  Future mePostWithHttpInfo({ User u }) async {
     Object postBody = u;
 
     // verify required params are set
@@ -120,21 +131,20 @@ class UserApi {
     List<QueryParam> queryParams = [];
     Map<String, String> headerParams = {};
     Map<String, String> formParams = {};
-    
+
     List<String> contentTypes = ["application/json"];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["private"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
     else {
-          }
+    }
 
     var response = await apiClient.invokeAPI(path,
                                              'POST',
@@ -144,20 +154,26 @@ class UserApi {
                                              formParams,
                                              contentType,
                                              authNames);
-
-    if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
-    } else if(response.body != null) {
-      return 
-          ;
-    } else {
-      return ;
-    }
+    return response;
   }
-  /// Create a new user
+
+  /// Update the user on the actual session
   ///
   /// 
-  Future signupPut({ User u }) async {
+  Future mePost({ User u }) async {
+    Response response = await mePostWithHttpInfo( u: u );
+    if(response.statusCode >= 400) {
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
+    } else if(response.body != null) {
+    } else {
+      return;
+    }
+  }
+
+  /// Create a new user with HTTP info returned
+  ///
+  /// 
+  Future signupPutWithHttpInfo({ User u }) async {
     Object postBody = u;
 
     // verify required params are set
@@ -169,21 +185,20 @@ class UserApi {
     List<QueryParam> queryParams = [];
     Map<String, String> headerParams = {};
     Map<String, String> formParams = {};
-    
+
     List<String> contentTypes = ["application/json"];
 
-    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
     List<String> authNames = ["private"];
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      
+      MultipartRequest mp = MultipartRequest(null, null);
       if(hasFields)
         postBody = mp;
     }
     else {
-          }
+    }
 
     var response = await apiClient.invokeAPI(path,
                                              'PUT',
@@ -193,14 +208,20 @@ class UserApi {
                                              formParams,
                                              contentType,
                                              authNames);
+    return response;
+  }
 
+  /// Create a new user
+  ///
+  /// 
+  Future signupPut({ User u }) async {
+    Response response = await signupPutWithHttpInfo( u: u );
     if(response.statusCode >= 400) {
-      throw new ApiException(response.statusCode, response.body);
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
     } else if(response.body != null) {
-      return 
-          ;
     } else {
-      return ;
+      return;
     }
   }
+
 }
