@@ -14,8 +14,8 @@ class ApiClient extends gen.ApiClient {
   String _sessionCookie;
 
   ApiClient(
-      {String basePath: "https://coinmanager.net/api",
-      this.sessionCookieName: 'PLAY_SESSION'})
+      {String basePath = "https://coinmanager.net/api",
+      this.sessionCookieName = 'PLAY_SESSION'})
       : super(basePath: basePath);
 
   @override
