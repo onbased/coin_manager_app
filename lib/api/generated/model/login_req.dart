@@ -1,24 +1,53 @@
-        import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'login_req.g.dart';
+class LoginReq {
+  
+  String user = null;
+  
+  String password = null;
+  LoginReq();
 
-abstract class LoginReq implements Built<LoginReq, LoginReqBuilder> {
+  @override
+  String toString() {
+    return 'LoginReq[user=$user, password=$password, ]';
+  }
 
-    
-        @nullable
-    @BuiltValueField(wireName: r'user')
-    String get user;
-    
-        @nullable
-    @BuiltValueField(wireName: r'password')
-    String get password;
+  LoginReq.fromJson(Map<String, dynamic> json) {
+    if (json == null) return;
+    user = json['user'];
+    password = json['password'];
+  }
 
-    // Boilerplate code needed to wire-up generated code
-    LoginReq._();
+  Map<String, dynamic> toJson() {
+    Map <String, dynamic> json = {};
+    if (user != null)
+      json['user'] = user;
+    if (password != null)
+      json['password'] = password;
+    return json;
+  }
 
-    factory LoginReq([updates(LoginReqBuilder b)]) = _$LoginReq;
-    static Serializer<LoginReq> get serializer => _$loginReqSerializer;
+  static List<LoginReq> listFromJson(List<dynamic> json) {
+    return json == null ? List<LoginReq>() : json.map((value) => LoginReq.fromJson(value)).toList();
+  }
 
+  static Map<String, LoginReq> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, LoginReq>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = LoginReq.fromJson(value));
+    }
+    return map;
+  }
+
+  // maps a json object with a list of LoginReq-objects as value to a dart map
+  static Map<String, List<LoginReq>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<LoginReq>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = LoginReq.listFromJson(value);
+       });
+     }
+     return map;
+  }
 }
 

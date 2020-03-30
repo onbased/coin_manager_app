@@ -1,164 +1,227 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-import 'package:coin_manager/api/generated/model/session_data.dart';
-import 'package:coin_manager/api/generated/model/login_req.dart';
-import 'package:coin_manager/api/generated/model/login_error.dart';
-import 'package:coin_manager/api/generated/model/user_error.dart';
-import 'package:coin_manager/api/generated/model/inline_response500.dart';
-import 'package:coin_manager/api/generated/model/user.dart';
+
 
 class UserApi {
-    final Dio _dio;
-    Serializers _serializers;
+  final ApiClient apiClient;
 
-    UserApi(this._dio, this._serializers);
+  UserApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
-        /// Authenticate user and create session
-        ///
-        /// 
-        Future<Response<SessionData>>loginPost({ LoginReq loginReq,CancelToken cancelToken, Map<String, String> headers,}) async {
+  /// Authenticate user and create session with HTTP info returned
+  ///
+  /// 
+  Future<Response> loginPostWithHttpInfo({ LoginReq loginReq }) async {
+    Object postBody = loginReq;
 
-        String _path = "/login";
+    // verify required params are set
 
-        Map<String, dynamic> queryParams = {};
-        Map<String, String> headerParams = Map.from(headers ?? {});
-        dynamic bodyData;
+    // create path and map variables
+    String path = "/login".replaceAll("{format}","json");
 
-        queryParams.removeWhere((key, value) => value == null);
-        headerParams.removeWhere((key, value) => value == null);
+    // query params
+    List<QueryParam> queryParams = [];
+    Map<String, String> headerParams = {};
+    Map<String, String> formParams = {};
 
-        List<String> contentTypes = ["application/json"];
+    List<String> contentTypes = ["application/json"];
 
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
+    List<String> authNames = ["private"];
 
-            var serializedBody = _serializers.serialize(loginReq);
-            var jsonloginReq = json.encode(serializedBody);
-            bodyData = jsonloginReq;
+    if(contentType.startsWith("multipart/form-data")) {
+      bool hasFields = false;
+      MultipartRequest mp = MultipartRequest(null, null);
+      if(hasFields)
+        postBody = mp;
+    }
+    else {
+    }
 
-            return _dio.request(
-            _path,
-            queryParameters: queryParams,
-            data: bodyData,
-            options: Options(
-            method: 'post'.toUpperCase(),
-            headers: headerParams,
-            contentType: contentTypes.isNotEmpty ? contentTypes[0] : "application/json",
-            ),
-            cancelToken: cancelToken,
-            ).then((response) {
+    var response = await apiClient.invokeAPI(path,
+                                             'POST',
+                                             queryParams,
+                                             postBody,
+                                             headerParams,
+                                             formParams,
+                                             contentType,
+                                             authNames);
+    return response;
+  }
 
-        var serializer = _serializers.serializerForType(SessionData);
-        var data = _serializers.deserializeWith<SessionData>(serializer, response.data);
+  /// Authenticate user and create session
+  ///
+  /// 
+  Future<SessionData> loginPost({ LoginReq loginReq }) async {
+    Response response = await loginPostWithHttpInfo( loginReq: loginReq );
+    if(response.statusCode >= 400) {
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
+    } else if(response.body != null) {
+      return apiClient.deserialize(_decodeBodyBytes(response), 'SessionData') as SessionData;
+    } else {
+      return null;
+    }
+  }
 
-            return Response<SessionData>(
-                data: data,
-                headers: response.headers,
-                request: response.request,
-                redirects: response.redirects,
-                statusCode: response.statusCode,
-                statusMessage: response.statusMessage,
-                extra: response.extra,
-            );
-            });
-            }
-        /// Info about the user of the actual session
-        ///
-        /// 
-        Future<Response>meGet({ CancelToken cancelToken, Map<String, String> headers,}) async {
+  /// Info about the user of the actual session with HTTP info returned
+  ///
+  /// 
+  Future meGetWithHttpInfo() async {
+    Object postBody;
 
-        String _path = "/me";
+    // verify required params are set
 
-        Map<String, dynamic> queryParams = {};
-        Map<String, String> headerParams = Map.from(headers ?? {});
-        dynamic bodyData;
+    // create path and map variables
+    String path = "/me".replaceAll("{format}","json");
 
-        queryParams.removeWhere((key, value) => value == null);
-        headerParams.removeWhere((key, value) => value == null);
+    // query params
+    List<QueryParam> queryParams = [];
+    Map<String, String> headerParams = {};
+    Map<String, String> formParams = {};
 
-        List<String> contentTypes = [];
+    List<String> contentTypes = [];
 
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
+    List<String> authNames = ["private"];
 
+    if(contentType.startsWith("multipart/form-data")) {
+      bool hasFields = false;
+      MultipartRequest mp = MultipartRequest(null, null);
+      if(hasFields)
+        postBody = mp;
+    }
+    else {
+    }
 
-            return _dio.request(
-            _path,
-            queryParameters: queryParams,
-            data: bodyData,
-            options: Options(
-            method: 'get'.toUpperCase(),
-            headers: headerParams,
-            contentType: contentTypes.isNotEmpty ? contentTypes[0] : "application/json",
-            ),
-            cancelToken: cancelToken,
-            );
-            }
-        /// Update the user on the actual session
-        ///
-        /// 
-        Future<Response>mePost({ User u,CancelToken cancelToken, Map<String, String> headers,}) async {
+    var response = await apiClient.invokeAPI(path,
+                                             'GET',
+                                             queryParams,
+                                             postBody,
+                                             headerParams,
+                                             formParams,
+                                             contentType,
+                                             authNames);
+    return response;
+  }
 
-        String _path = "/me";
+  /// Info about the user of the actual session
+  ///
+  /// 
+  Future meGet() async {
+    Response response = await meGetWithHttpInfo();
+    if(response.statusCode >= 400) {
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
+    } else if(response.body != null) {
+    } else {
+      return;
+    }
+  }
 
-        Map<String, dynamic> queryParams = {};
-        Map<String, String> headerParams = Map.from(headers ?? {});
-        dynamic bodyData;
+  /// Update the user on the actual session with HTTP info returned
+  ///
+  /// 
+  Future mePostWithHttpInfo({ User u }) async {
+    Object postBody = u;
 
-        queryParams.removeWhere((key, value) => value == null);
-        headerParams.removeWhere((key, value) => value == null);
+    // verify required params are set
 
-        List<String> contentTypes = ["application/json"];
+    // create path and map variables
+    String path = "/me".replaceAll("{format}","json");
 
+    // query params
+    List<QueryParam> queryParams = [];
+    Map<String, String> headerParams = {};
+    Map<String, String> formParams = {};
 
-            var serializedBody = _serializers.serialize(u);
-            var jsonu = json.encode(serializedBody);
-            bodyData = jsonu;
+    List<String> contentTypes = ["application/json"];
 
-            return _dio.request(
-            _path,
-            queryParameters: queryParams,
-            data: bodyData,
-            options: Options(
-            method: 'post'.toUpperCase(),
-            headers: headerParams,
-            contentType: contentTypes.isNotEmpty ? contentTypes[0] : "application/json",
-            ),
-            cancelToken: cancelToken,
-            );
-            }
-        /// Create a new user
-        ///
-        /// 
-        Future<Response>signupPut({ User u,CancelToken cancelToken, Map<String, String> headers,}) async {
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
+    List<String> authNames = ["private"];
 
-        String _path = "/signup";
+    if(contentType.startsWith("multipart/form-data")) {
+      bool hasFields = false;
+      MultipartRequest mp = MultipartRequest(null, null);
+      if(hasFields)
+        postBody = mp;
+    }
+    else {
+    }
 
-        Map<String, dynamic> queryParams = {};
-        Map<String, String> headerParams = Map.from(headers ?? {});
-        dynamic bodyData;
+    var response = await apiClient.invokeAPI(path,
+                                             'POST',
+                                             queryParams,
+                                             postBody,
+                                             headerParams,
+                                             formParams,
+                                             contentType,
+                                             authNames);
+    return response;
+  }
 
-        queryParams.removeWhere((key, value) => value == null);
-        headerParams.removeWhere((key, value) => value == null);
+  /// Update the user on the actual session
+  ///
+  /// 
+  Future mePost({ User u }) async {
+    Response response = await mePostWithHttpInfo( u: u );
+    if(response.statusCode >= 400) {
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
+    } else if(response.body != null) {
+    } else {
+      return;
+    }
+  }
 
-        List<String> contentTypes = ["application/json"];
+  /// Create a new user with HTTP info returned
+  ///
+  /// 
+  Future signupPutWithHttpInfo({ User u }) async {
+    Object postBody = u;
 
+    // verify required params are set
 
-            var serializedBody = _serializers.serialize(u);
-            var jsonu = json.encode(serializedBody);
-            bodyData = jsonu;
+    // create path and map variables
+    String path = "/signup".replaceAll("{format}","json");
 
-            return _dio.request(
-            _path,
-            queryParameters: queryParams,
-            data: bodyData,
-            options: Options(
-            method: 'put'.toUpperCase(),
-            headers: headerParams,
-            contentType: contentTypes.isNotEmpty ? contentTypes[0] : "application/json",
-            ),
-            cancelToken: cancelToken,
-            );
-            }
-        }
+    // query params
+    List<QueryParam> queryParams = [];
+    Map<String, String> headerParams = {};
+    Map<String, String> formParams = {};
+
+    List<String> contentTypes = ["application/json"];
+
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
+    List<String> authNames = ["private"];
+
+    if(contentType.startsWith("multipart/form-data")) {
+      bool hasFields = false;
+      MultipartRequest mp = MultipartRequest(null, null);
+      if(hasFields)
+        postBody = mp;
+    }
+    else {
+    }
+
+    var response = await apiClient.invokeAPI(path,
+                                             'PUT',
+                                             queryParams,
+                                             postBody,
+                                             headerParams,
+                                             formParams,
+                                             contentType,
+                                             authNames);
+    return response;
+  }
+
+  /// Create a new user
+  ///
+  /// 
+  Future signupPut({ User u }) async {
+    Response response = await signupPutWithHttpInfo( u: u );
+    if(response.statusCode >= 400) {
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
+    } else if(response.body != null) {
+    } else {
+      return;
+    }
+  }
+
+}

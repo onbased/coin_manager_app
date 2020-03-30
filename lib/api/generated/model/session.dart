@@ -1,28 +1,58 @@
-        import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'session.g.dart';
+class Session {
+  /* userid */
+  int uid = null;
+  /* timezone offset (in minutes) */
+  int tz = null;
+  /* base currency */
+  String base = null;
+  Session();
 
-abstract class Session implements Built<Session, SessionBuilder> {
+  @override
+  String toString() {
+    return 'Session[uid=$uid, tz=$tz, base=$base, ]';
+  }
 
-    /* userid */
-        @nullable
-    @BuiltValueField(wireName: r'uid')
-    int get uid;
-    /* timezone offset (in minutes) */
-        @nullable
-    @BuiltValueField(wireName: r'tz')
-    int get tz;
-    /* base currency */
-        @nullable
-    @BuiltValueField(wireName: r'base')
-    String get base;
+  Session.fromJson(Map<String, dynamic> json) {
+    if (json == null) return;
+    uid = json['uid'];
+    tz = json['tz'];
+    base = json['base'];
+  }
 
-    // Boilerplate code needed to wire-up generated code
-    Session._();
+  Map<String, dynamic> toJson() {
+    Map <String, dynamic> json = {};
+    if (uid != null)
+      json['uid'] = uid;
+    if (tz != null)
+      json['tz'] = tz;
+    if (base != null)
+      json['base'] = base;
+    return json;
+  }
 
-    factory Session([updates(SessionBuilder b)]) = _$Session;
-    static Serializer<Session> get serializer => _$sessionSerializer;
+  static List<Session> listFromJson(List<dynamic> json) {
+    return json == null ? List<Session>() : json.map((value) => Session.fromJson(value)).toList();
+  }
 
+  static Map<String, Session> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, Session>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = Session.fromJson(value));
+    }
+    return map;
+  }
+
+  // maps a json object with a list of Session-objects as value to a dart map
+  static Map<String, List<Session>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<Session>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = Session.listFromJson(value);
+       });
+     }
+     return map;
+  }
 }
 

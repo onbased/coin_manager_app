@@ -1,30 +1,58 @@
-            import 'package:coin_manager/api/generated/model/pwd_field_all_of.dart';
-            import 'package:coin_manager/api/generated/model/cfg_field.dart';
-        import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'pwd_field.g.dart';
+class PwdField {
+  /* 0 means the fiel can be empty */
+  int minLen = null;
+  
+  int maxLen = null;
+  /* the charaters recognized as 'special character'. one of them must be in the password value */
+  String specChars = null;
+  PwdField();
 
-abstract class PwdField implements Built<PwdField, PwdFieldBuilder> {
+  @override
+  String toString() {
+    return 'PwdField[minLen=$minLen, maxLen=$maxLen, specChars=$specChars, ]';
+  }
 
-    /* 0 means the fiel can be empty */
-        @nullable
-    @BuiltValueField(wireName: r'minLen')
-    int get minLen;
-    
-        @nullable
-    @BuiltValueField(wireName: r'maxLen')
-    int get maxLen;
-    /* the charaters recognized as 'special character'. one of them must be in the password value */
-        @nullable
-    @BuiltValueField(wireName: r'specChars')
-    String get specChars;
+  PwdField.fromJson(Map<String, dynamic> json) {
+    if (json == null) return;
+    minLen = json['minLen'];
+    maxLen = json['maxLen'];
+    specChars = json['specChars'];
+  }
 
-    // Boilerplate code needed to wire-up generated code
-    PwdField._();
+  Map<String, dynamic> toJson() {
+    Map <String, dynamic> json = {};
+    if (minLen != null)
+      json['minLen'] = minLen;
+    if (maxLen != null)
+      json['maxLen'] = maxLen;
+    if (specChars != null)
+      json['specChars'] = specChars;
+    return json;
+  }
 
-    factory PwdField([updates(PwdFieldBuilder b)]) = _$PwdField;
-    static Serializer<PwdField> get serializer => _$pwdFieldSerializer;
+  static List<PwdField> listFromJson(List<dynamic> json) {
+    return json == null ? List<PwdField>() : json.map((value) => PwdField.fromJson(value)).toList();
+  }
 
+  static Map<String, PwdField> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, PwdField>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = PwdField.fromJson(value));
+    }
+    return map;
+  }
+
+  // maps a json object with a list of PwdField-objects as value to a dart map
+  static Map<String, List<PwdField>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<PwdField>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = PwdField.listFromJson(value);
+       });
+     }
+     return map;
+  }
 }
 

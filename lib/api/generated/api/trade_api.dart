@@ -1,63 +1,69 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-import 'package:coin_manager/api/generated/model/account_orders.dart';
-import 'package:coin_manager/api/generated/model/inline_response500.dart';
-import 'package:coin_manager/api/generated/model/field_error.dart';
+
 
 class TradeApi {
-    final Dio _dio;
-    Serializers _serializers;
+  final ApiClient apiClient;
 
-    TradeApi(this._dio, this._serializers);
+  TradeApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
 
-        /// Get open orders + their actual prices
-        ///
-        /// 
-        Future<Response<AccountOrders>>openTrades(int a,{ CancelToken cancelToken, Map<String, String> headers,}) async {
+  /// Get open orders + their actual prices with HTTP info returned
+  ///
+  /// 
+  Future<Response> openTradesWithHttpInfo(int a) async {
+    Object postBody;
 
-        String _path = "/trades";
+    // verify required params are set
+    if(a == null) {
+     throw ApiException(400, "Missing required param: a");
+    }
 
-        Map<String, dynamic> queryParams = {};
-        Map<String, String> headerParams = Map.from(headers ?? {});
-        dynamic bodyData;
+    // create path and map variables
+    String path = "/trades".replaceAll("{format}","json");
 
-                queryParams[r'a'] = a;
-        queryParams.removeWhere((key, value) => value == null);
-        headerParams.removeWhere((key, value) => value == null);
+    // query params
+    List<QueryParam> queryParams = [];
+    Map<String, String> headerParams = {};
+    Map<String, String> formParams = {};
+      queryParams.addAll(_convertParametersForCollectionFormat("", "a", a));
 
-        List<String> contentTypes = [];
+    List<String> contentTypes = [];
 
+    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
+    List<String> authNames = ["private"];
 
+    if(contentType.startsWith("multipart/form-data")) {
+      bool hasFields = false;
+      MultipartRequest mp = MultipartRequest(null, null);
+      if(hasFields)
+        postBody = mp;
+    }
+    else {
+    }
 
-            return _dio.request(
-            _path,
-            queryParameters: queryParams,
-            data: bodyData,
-            options: Options(
-            method: 'get'.toUpperCase(),
-            headers: headerParams,
-            contentType: contentTypes.isNotEmpty ? contentTypes[0] : "application/json",
-            ),
-            cancelToken: cancelToken,
-            ).then((response) {
+    var response = await apiClient.invokeAPI(path,
+                                             'GET',
+                                             queryParams,
+                                             postBody,
+                                             headerParams,
+                                             formParams,
+                                             contentType,
+                                             authNames);
+    return response;
+  }
 
-        var serializer = _serializers.serializerForType(AccountOrders);
-        var data = _serializers.deserializeWith<AccountOrders>(serializer, response.data);
+  /// Get open orders + their actual prices
+  ///
+  /// 
+  Future<AccountOrders> openTrades(int a) async {
+    Response response = await openTradesWithHttpInfo(a);
+    if(response.statusCode >= 400) {
+      throw ApiException(response.statusCode, _decodeBodyBytes(response));
+    } else if(response.body != null) {
+      return apiClient.deserialize(_decodeBodyBytes(response), 'AccountOrders') as AccountOrders;
+    } else {
+      return null;
+    }
+  }
 
-            return Response<AccountOrders>(
-                data: data,
-                headers: response.headers,
-                request: response.request,
-                redirects: response.redirects,
-                statusCode: response.statusCode,
-                statusMessage: response.statusMessage,
-                extra: response.extra,
-            );
-            });
-            }
-        }
+}

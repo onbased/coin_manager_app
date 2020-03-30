@@ -1,27 +1,59 @@
-            import 'package:coin_manager/api/generated/model/field_error.dart';
-        import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'login_error.g.dart';
+class LoginError {
+  
+  FieldError user = null;
+  //enum userEnum {  required,  invalid,  nonUnique,  tooShort,  tooLong,  };{
+  
+  FieldError password = null;
+  //enum passwordEnum {  required,  invalid,  nonUnique,  tooShort,  tooLong,  };{
+  LoginError();
 
-abstract class LoginError implements Built<LoginError, LoginErrorBuilder> {
+  @override
+  String toString() {
+    return 'LoginError[user=$user, password=$password, ]';
+  }
 
-    
-        @nullable
-    @BuiltValueField(wireName: r'user')
-    FieldError get user;
-        //enum userEnum {  required,  invalid,  nonUnique,  tooShort,  tooLong,  };
-    
-        @nullable
-    @BuiltValueField(wireName: r'password')
-    FieldError get password;
-        //enum passwordEnum {  required,  invalid,  nonUnique,  tooShort,  tooLong,  };
+  LoginError.fromJson(Map<String, dynamic> json) {
+    if (json == null) return;
+    user = (json['user'] == null) ?
+      null :
+      FieldError.fromJson(json['user']);
+    password = (json['password'] == null) ?
+      null :
+      FieldError.fromJson(json['password']);
+  }
 
-    // Boilerplate code needed to wire-up generated code
-    LoginError._();
+  Map<String, dynamic> toJson() {
+    Map <String, dynamic> json = {};
+    if (user != null)
+      json['user'] = user;
+    if (password != null)
+      json['password'] = password;
+    return json;
+  }
 
-    factory LoginError([updates(LoginErrorBuilder b)]) = _$LoginError;
-    static Serializer<LoginError> get serializer => _$loginErrorSerializer;
+  static List<LoginError> listFromJson(List<dynamic> json) {
+    return json == null ? List<LoginError>() : json.map((value) => LoginError.fromJson(value)).toList();
+  }
 
+  static Map<String, LoginError> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, LoginError>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = LoginError.fromJson(value));
+    }
+    return map;
+  }
+
+  // maps a json object with a list of LoginError-objects as value to a dart map
+  static Map<String, List<LoginError>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<LoginError>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = LoginError.listFromJson(value);
+       });
+     }
+     return map;
+  }
 }
 

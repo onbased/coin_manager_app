@@ -1,39 +1,78 @@
-            import 'package:built_collection/built_collection.dart';
-            import 'package:coin_manager/api/generated/model/cfg_field.dart';
-            import 'package:coin_manager/api/generated/model/pwd_field.dart';
-        import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'config.g.dart';
+class Config {
+  
+  CfgField name = null;
+  
+  CfgField loginid = null;
+  
+  CfgField email = null;
+  
+  PwdField password = null;
+  
+  List<String> displayCurrencies = [];
+  Config();
 
-abstract class Config implements Built<Config, ConfigBuilder> {
+  @override
+  String toString() {
+    return 'Config[name=$name, loginid=$loginid, email=$email, password=$password, displayCurrencies=$displayCurrencies, ]';
+  }
 
-    
-        @nullable
-    @BuiltValueField(wireName: r'name')
-    CfgField get name;
-    
-        @nullable
-    @BuiltValueField(wireName: r'loginid')
-    CfgField get loginid;
-    
-        @nullable
-    @BuiltValueField(wireName: r'email')
-    CfgField get email;
-    
-        @nullable
-    @BuiltValueField(wireName: r'password')
-    PwdField get password;
-    
-        @nullable
-    @BuiltValueField(wireName: r'displayCurrencies')
-    BuiltList<String> get displayCurrencies;
+  Config.fromJson(Map<String, dynamic> json) {
+    if (json == null) return;
+    name = (json['name'] == null) ?
+      null :
+      CfgField.fromJson(json['name']);
+    loginid = (json['loginid'] == null) ?
+      null :
+      CfgField.fromJson(json['loginid']);
+    email = (json['email'] == null) ?
+      null :
+      CfgField.fromJson(json['email']);
+    password = (json['password'] == null) ?
+      null :
+      PwdField.fromJson(json['password']);
+    displayCurrencies = (json['displayCurrencies'] == null) ?
+      null :
+      (json['displayCurrencies'] as List).cast<String>();
+  }
 
-    // Boilerplate code needed to wire-up generated code
-    Config._();
+  Map<String, dynamic> toJson() {
+    Map <String, dynamic> json = {};
+    if (name != null)
+      json['name'] = name;
+    if (loginid != null)
+      json['loginid'] = loginid;
+    if (email != null)
+      json['email'] = email;
+    if (password != null)
+      json['password'] = password;
+    if (displayCurrencies != null)
+      json['displayCurrencies'] = displayCurrencies;
+    return json;
+  }
 
-    factory Config([updates(ConfigBuilder b)]) = _$Config;
-    static Serializer<Config> get serializer => _$configSerializer;
+  static List<Config> listFromJson(List<dynamic> json) {
+    return json == null ? List<Config>() : json.map((value) => Config.fromJson(value)).toList();
+  }
 
+  static Map<String, Config> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, Config>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = Config.fromJson(value));
+    }
+    return map;
+  }
+
+  // maps a json object with a list of Config-objects as value to a dart map
+  static Map<String, List<Config>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<Config>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = Config.listFromJson(value);
+       });
+     }
+     return map;
+  }
 }
 

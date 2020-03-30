@@ -1,27 +1,57 @@
-            import 'package:built_collection/built_collection.dart';
-            import 'package:coin_manager/api/generated/model/full_fund.dart';
-            import 'package:coin_manager/api/generated/model/messages.dart';
-        import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'funds.g.dart';
+class Funds {
+  
+  List<FullFund> funds = [];
+  
+  Messages msgs = null;
+  Funds();
 
-abstract class Funds implements Built<Funds, FundsBuilder> {
+  @override
+  String toString() {
+    return 'Funds[funds=$funds, msgs=$msgs, ]';
+  }
 
-    
-        @nullable
-    @BuiltValueField(wireName: r'funds')
-    BuiltList<FullFund> get funds;
-    
-        @nullable
-    @BuiltValueField(wireName: r'msgs')
-    Messages get msgs;
+  Funds.fromJson(Map<String, dynamic> json) {
+    if (json == null) return;
+    funds = (json['funds'] == null) ?
+      null :
+      FullFund.listFromJson(json['funds']);
+    msgs = (json['msgs'] == null) ?
+      null :
+      Messages.fromJson(json['msgs']);
+  }
 
-    // Boilerplate code needed to wire-up generated code
-    Funds._();
+  Map<String, dynamic> toJson() {
+    Map <String, dynamic> json = {};
+    if (funds != null)
+      json['funds'] = funds;
+    if (msgs != null)
+      json['msgs'] = msgs;
+    return json;
+  }
 
-    factory Funds([updates(FundsBuilder b)]) = _$Funds;
-    static Serializer<Funds> get serializer => _$fundsSerializer;
+  static List<Funds> listFromJson(List<dynamic> json) {
+    return json == null ? List<Funds>() : json.map((value) => Funds.fromJson(value)).toList();
+  }
 
+  static Map<String, Funds> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, Funds>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = Funds.fromJson(value));
+    }
+    return map;
+  }
+
+  // maps a json object with a list of Funds-objects as value to a dart map
+  static Map<String, List<Funds>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<Funds>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = Funds.listFromJson(value);
+       });
+     }
+     return map;
+  }
 }
 

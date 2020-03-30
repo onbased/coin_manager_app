@@ -1,40 +1,42 @@
-        import 'package:built_collection/built_collection.dart';
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'field_error.g.dart';
+class FieldError {
+  /// The underlying value of this enum member.
+  final String value;
 
-class FieldError extends EnumClass {
+  const FieldError._internal(this.value);
 
   /// api.FieldError
-  @BuiltValueEnumConst(wireName: "required")
-  static const FieldError required_ = _$required_;
+  static const FieldError required_ = const FieldError._internal("required");
   /// api.FieldError
-  @BuiltValueEnumConst(wireName: "invalid")
-  static const FieldError invalid = _$invalid;
+  static const FieldError invalid_ = const FieldError._internal("invalid");
   /// api.FieldError
-  @BuiltValueEnumConst(wireName: "nonUnique")
-  static const FieldError nonUnique = _$nonUnique;
+  static const FieldError nonUnique_ = const FieldError._internal("nonUnique");
   /// api.FieldError
-  @BuiltValueEnumConst(wireName: "tooShort")
-  static const FieldError tooShort = _$tooShort;
+  static const FieldError tooShort_ = const FieldError._internal("tooShort");
   /// api.FieldError
-  @BuiltValueEnumConst(wireName: "tooLong")
-  static const FieldError tooLong = _$tooLong;
+  static const FieldError tooLong_ = const FieldError._internal("tooLong");
 
-  static Serializer<FieldError> get serializer => _$fieldErrorSerializer;
-
-  const FieldError._(String name): super(name);
-
-  static BuiltSet<FieldError> get values => _$values;
-  static FieldError valueOf(String name) => _$valueOf(name);
+  static FieldError fromJson(String value) {
+    return new FieldErrorTypeTransformer().decode(value);
+  }
 }
 
-/// Optionally, enum_class can generate a mixin to go with your enum for use
-/// with Angular. It exposes your enum constants as getters. So, if you mix it
-/// in to your Dart component class, the values become available to the
-/// corresponding Angular template.
-///
-/// Trigger mixin generation by writing a line like this one next to your enum.
-abstract class FieldErrorMixin = Object with _$FieldErrorMixin;
+class FieldErrorTypeTransformer {
+
+  dynamic encode(FieldError data) {
+    return data.value;
+  }
+
+  FieldError decode(dynamic data) {
+    switch (data) {
+      case "required": return FieldError.required_;
+      case "invalid": return FieldError.invalid_;
+      case "nonUnique": return FieldError.nonUnique_;
+      case "tooShort": return FieldError.tooShort_;
+      case "tooLong": return FieldError.tooLong_;
+      default: throw('Unknown enum value to decode: $data');
+    }
+  }
+}
 

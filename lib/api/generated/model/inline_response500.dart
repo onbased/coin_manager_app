@@ -1,20 +1,48 @@
-        import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'inline_response500.g.dart';
+class InlineResponse500 {
+  /* the unique log id of the error in the error log */
+  String id = null;
+  InlineResponse500();
 
-abstract class InlineResponse500 implements Built<InlineResponse500, InlineResponse500Builder> {
+  @override
+  String toString() {
+    return 'InlineResponse500[id=$id, ]';
+  }
 
-    /* the unique log id of the error in the error log */
-        @nullable
-    @BuiltValueField(wireName: r'id')
-    String get id;
+  InlineResponse500.fromJson(Map<String, dynamic> json) {
+    if (json == null) return;
+    id = json['id'];
+  }
 
-    // Boilerplate code needed to wire-up generated code
-    InlineResponse500._();
+  Map<String, dynamic> toJson() {
+    Map <String, dynamic> json = {};
+    if (id != null)
+      json['id'] = id;
+    return json;
+  }
 
-    factory InlineResponse500([updates(InlineResponse500Builder b)]) = _$InlineResponse500;
-    static Serializer<InlineResponse500> get serializer => _$inlineResponse500Serializer;
+  static List<InlineResponse500> listFromJson(List<dynamic> json) {
+    return json == null ? List<InlineResponse500>() : json.map((value) => InlineResponse500.fromJson(value)).toList();
+  }
 
+  static Map<String, InlineResponse500> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, InlineResponse500>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = InlineResponse500.fromJson(value));
+    }
+    return map;
+  }
+
+  // maps a json object with a list of InlineResponse500-objects as value to a dart map
+  static Map<String, List<InlineResponse500>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<InlineResponse500>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = InlineResponse500.listFromJson(value);
+       });
+     }
+     return map;
+  }
 }
 

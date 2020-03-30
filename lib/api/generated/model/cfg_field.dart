@@ -1,24 +1,53 @@
-        import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+part of openapi.api;
 
-part 'cfg_field.g.dart';
+class CfgField {
+  /* 0 means the fiel can be empty */
+  int minLen = null;
+  
+  int maxLen = null;
+  CfgField();
 
-abstract class CfgField implements Built<CfgField, CfgFieldBuilder> {
+  @override
+  String toString() {
+    return 'CfgField[minLen=$minLen, maxLen=$maxLen, ]';
+  }
 
-    /* 0 means the fiel can be empty */
-        @nullable
-    @BuiltValueField(wireName: r'minLen')
-    int get minLen;
-    
-        @nullable
-    @BuiltValueField(wireName: r'maxLen')
-    int get maxLen;
+  CfgField.fromJson(Map<String, dynamic> json) {
+    if (json == null) return;
+    minLen = json['minLen'];
+    maxLen = json['maxLen'];
+  }
 
-    // Boilerplate code needed to wire-up generated code
-    CfgField._();
+  Map<String, dynamic> toJson() {
+    Map <String, dynamic> json = {};
+    if (minLen != null)
+      json['minLen'] = minLen;
+    if (maxLen != null)
+      json['maxLen'] = maxLen;
+    return json;
+  }
 
-    factory CfgField([updates(CfgFieldBuilder b)]) = _$CfgField;
-    static Serializer<CfgField> get serializer => _$cfgFieldSerializer;
+  static List<CfgField> listFromJson(List<dynamic> json) {
+    return json == null ? List<CfgField>() : json.map((value) => CfgField.fromJson(value)).toList();
+  }
 
+  static Map<String, CfgField> mapFromJson(Map<String, dynamic> json) {
+    var map = Map<String, CfgField>();
+    if (json != null && json.isNotEmpty) {
+      json.forEach((String key, dynamic value) => map[key] = CfgField.fromJson(value));
+    }
+    return map;
+  }
+
+  // maps a json object with a list of CfgField-objects as value to a dart map
+  static Map<String, List<CfgField>> mapListFromJson(Map<String, dynamic> json) {
+    var map = Map<String, List<CfgField>>();
+     if (json != null && json.isNotEmpty) {
+       json.forEach((String key, dynamic value) {
+         map[key] = CfgField.listFromJson(value);
+       });
+     }
+     return map;
+  }
 }
 

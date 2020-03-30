@@ -19,7 +19,7 @@
         },
         {
             "label": "Generate api clients",
-            "command": "docker run --rm --volume ${workspaceFolder}/lib/api/generated:/src/lib --volume ${workspaceFolder}/lib/api/swagger.yml:/swagger.yml openapitools/openapi-generator-cli:v4.3.0 generate --generator-name dart-dio --input-spec /swagger.yml --output /src --additional-properties pubName=coin_manager/api/generated",
+            "command": "docker run --rm --volume ${workspaceFolder}/lib/api/generated:/src/lib --volume ${workspaceFolder}/lib/api/swagger.yml:/swagger.yml openapitools/openapi-generator-cli:v4.3.0 generate --generator-name dart --input-spec /swagger.yml --output /src",
             "type": "shell",
             "args": [],
             "presentation": {
