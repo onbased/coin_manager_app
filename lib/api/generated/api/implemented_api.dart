@@ -1,119 +1,96 @@
-part of openapi.api;
+import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:built_value/serializer.dart';
 
-
+import 'package:coin_manager/api/generated/model/user_error.dart';
+import 'package:coin_manager/api/generated/model/inline_response500.dart';
+import 'package:coin_manager/api/generated/model/config.dart';
+import 'package:coin_manager/api/generated/model/user.dart';
 
 class ImplementedApi {
-  final ApiClient apiClient;
+    final Dio _dio;
+    Serializers _serializers;
 
-  ImplementedApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
+    ImplementedApi(this._dio, this._serializers);
 
-  /// The common server + client configuration required by the signup / profile page with HTTP info returned
-  ///
-  /// The server uses the same for parameters validation from &#x60;conf/common-config.json&#x60; See &#x60;Global.commonConfig&#x60;
-  Future<Response> configGetWithHttpInfo() async {
-    Object postBody;
+        /// The common server + client configuration required by the signup / profile page
+        ///
+        /// The server uses the same for parameters validation from &#x60;conf/common-config.json&#x60; See &#x60;Global.commonConfig&#x60;
+        Future<Response<Config>>configGet({ CancelToken cancelToken, Map<String, String> headers,}) async {
 
-    // verify required params are set
+        String _path = "/config";
 
-    // create path and map variables
-    String path = "/config".replaceAll("{format}","json");
+        Map<String, dynamic> queryParams = {};
+        Map<String, String> headerParams = Map.from(headers ?? {});
+        dynamic bodyData;
 
-    // query params
-    List<QueryParam> queryParams = [];
-    Map<String, String> headerParams = {};
-    Map<String, String> formParams = {};
+        queryParams.removeWhere((key, value) => value == null);
+        headerParams.removeWhere((key, value) => value == null);
 
-    List<String> contentTypes = [];
+        List<String> contentTypes = [];
 
-    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
-    List<String> authNames = ["private"];
 
-    if(contentType.startsWith("multipart/form-data")) {
-      bool hasFields = false;
-      MultipartRequest mp = MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
-    }
-    else {
-    }
 
-    var response = await apiClient.invokeAPI(path,
-                                             'GET',
-                                             queryParams,
-                                             postBody,
-                                             headerParams,
-                                             formParams,
-                                             contentType,
-                                             authNames);
-    return response;
-  }
+            return _dio.request(
+            _path,
+            queryParameters: queryParams,
+            data: bodyData,
+            options: Options(
+            method: 'get'.toUpperCase(),
+            headers: headerParams,
+            contentType: contentTypes.isNotEmpty ? contentTypes[0] : "application/json",
+            ),
+            cancelToken: cancelToken,
+            ).then((response) {
 
-  /// The common server + client configuration required by the signup / profile page
-  ///
-  /// The server uses the same for parameters validation from &#x60;conf/common-config.json&#x60; See &#x60;Global.commonConfig&#x60;
-  Future<Config> configGet() async {
-    Response response = await configGetWithHttpInfo();
-    if(response.statusCode >= 400) {
-      throw ApiException(response.statusCode, _decodeBodyBytes(response));
-    } else if(response.body != null) {
-      return apiClient.deserialize(_decodeBodyBytes(response), 'Config') as Config;
-    } else {
-      return null;
-    }
-  }
+        var serializer = _serializers.serializerForType(Config);
+        var data = _serializers.deserializeWith<Config>(serializer, response.data);
 
-  /// Update the user on the actual session with HTTP info returned
-  ///
-  /// 
-  Future mePostWithHttpInfo({ User u }) async {
-    Object postBody = u;
+            return Response<Config>(
+                data: data,
+                headers: response.headers,
+                request: response.request,
+                redirects: response.redirects,
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage,
+                extra: response.extra,
+            );
+            });
+            }
+        /// Update the user on the actual session
+        ///
+        /// 
+        Future<Response>mePost({ User u,CancelToken cancelToken, Map<String, String> headers,}) async {
 
-    // verify required params are set
+        String _path = "/me";
 
-    // create path and map variables
-    String path = "/me".replaceAll("{format}","json");
+        Map<String, dynamic> queryParams = {};
+        Map<String, String> headerParams = Map.from(headers ?? {});
+        dynamic bodyData;
 
-    // query params
-    List<QueryParam> queryParams = [];
-    Map<String, String> headerParams = {};
-    Map<String, String> formParams = {};
+        queryParams.removeWhere((key, value) => value == null);
+        headerParams.removeWhere((key, value) => value == null);
 
-    List<String> contentTypes = ["application/json"];
+        List<String> contentTypes = ["application/json"];
 
-    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
-    List<String> authNames = ["private"];
 
-    if(contentType.startsWith("multipart/form-data")) {
-      bool hasFields = false;
-      MultipartRequest mp = MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
-    }
-    else {
-    }
+            var serializedBody = _serializers.serialize(u);
+            var jsonu = json.encode(serializedBody);
+            bodyData = jsonu;
 
-    var response = await apiClient.invokeAPI(path,
-                                             'POST',
-                                             queryParams,
-                                             postBody,
-                                             headerParams,
-                                             formParams,
-                                             contentType,
-                                             authNames);
-    return response;
-  }
-
-  /// Update the user on the actual session
-  ///
-  /// 
-  Future mePost({ User u }) async {
-    Response response = await mePostWithHttpInfo( u: u );
-    if(response.statusCode >= 400) {
-      throw ApiException(response.statusCode, _decodeBodyBytes(response));
-    } else if(response.body != null) {
-    } else {
-      return;
-    }
-  }
-
-}
+            return _dio.request(
+            _path,
+            queryParameters: queryParams,
+            data: bodyData,
+            options: Options(
+            method: 'post'.toUpperCase(),
+            headers: headerParams,
+            contentType: contentTypes.isNotEmpty ? contentTypes[0] : "application/json",
+            ),
+            cancelToken: cancelToken,
+            );
+            }
+        }

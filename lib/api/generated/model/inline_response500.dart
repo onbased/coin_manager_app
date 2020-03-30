@@ -1,48 +1,20 @@
-part of openapi.api;
+        import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-class InlineResponse500 {
-  /* the unique log id of the error in the error log */
-  String id = null;
-  InlineResponse500();
+part 'inline_response500.g.dart';
 
-  @override
-  String toString() {
-    return 'InlineResponse500[id=$id, ]';
-  }
+abstract class InlineResponse500 implements Built<InlineResponse500, InlineResponse500Builder> {
 
-  InlineResponse500.fromJson(Map<String, dynamic> json) {
-    if (json == null) return;
-    id = json['id'];
-  }
+    /* the unique log id of the error in the error log */
+        @nullable
+    @BuiltValueField(wireName: r'id')
+    String get id;
 
-  Map<String, dynamic> toJson() {
-    Map <String, dynamic> json = {};
-    if (id != null)
-      json['id'] = id;
-    return json;
-  }
+    // Boilerplate code needed to wire-up generated code
+    InlineResponse500._();
 
-  static List<InlineResponse500> listFromJson(List<dynamic> json) {
-    return json == null ? List<InlineResponse500>() : json.map((value) => InlineResponse500.fromJson(value)).toList();
-  }
+    factory InlineResponse500([updates(InlineResponse500Builder b)]) = _$InlineResponse500;
+    static Serializer<InlineResponse500> get serializer => _$inlineResponse500Serializer;
 
-  static Map<String, InlineResponse500> mapFromJson(Map<String, dynamic> json) {
-    var map = Map<String, InlineResponse500>();
-    if (json != null && json.isNotEmpty) {
-      json.forEach((String key, dynamic value) => map[key] = InlineResponse500.fromJson(value));
-    }
-    return map;
-  }
-
-  // maps a json object with a list of InlineResponse500-objects as value to a dart map
-  static Map<String, List<InlineResponse500>> mapListFromJson(Map<String, dynamic> json) {
-    var map = Map<String, List<InlineResponse500>>();
-     if (json != null && json.isNotEmpty) {
-       json.forEach((String key, dynamic value) {
-         map[key] = InlineResponse500.listFromJson(value);
-       });
-     }
-     return map;
-  }
 }
 

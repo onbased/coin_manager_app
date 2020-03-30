@@ -1,71 +1,64 @@
-part of openapi.api;
+import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:built_value/serializer.dart';
 
-
+import 'package:coin_manager/api/generated/model/inline_response500.dart';
+import 'package:coin_manager/api/generated/model/funds.dart';
+import 'package:coin_manager/api/generated/model/field_error.dart';
 
 class FundsApi {
-  final ApiClient apiClient;
+    final Dio _dio;
+    Serializers _serializers;
 
-  FundsApi([ApiClient apiClient]) : apiClient = apiClient ?? defaultApiClient;
+    FundsApi(this._dio, this._serializers);
 
-  /// Get funds with HTTP info returned
-  ///
-  /// 
-  Future<Response> fundsWithHttpInfo({ int a, String t }) async {
-    Object postBody;
+        /// Get funds
+        ///
+        /// 
+        Future<Response<Funds>>funds({ int a,String t,CancelToken cancelToken, Map<String, String> headers,}) async {
 
-    // verify required params are set
+        String _path = "/funds";
 
-    // create path and map variables
-    String path = "/funds".replaceAll("{format}","json");
+        Map<String, dynamic> queryParams = {};
+        Map<String, String> headerParams = Map.from(headers ?? {});
+        dynamic bodyData;
 
-    // query params
-    List<QueryParam> queryParams = [];
-    Map<String, String> headerParams = {};
-    Map<String, String> formParams = {};
-    if(a != null) {
-      queryParams.addAll(_convertParametersForCollectionFormat("", "a", a));
-    }
-    if(t != null) {
-      queryParams.addAll(_convertParametersForCollectionFormat("", "t", t));
-    }
+                queryParams[r'a'] = a;
+                queryParams[r't'] = t;
+        queryParams.removeWhere((key, value) => value == null);
+        headerParams.removeWhere((key, value) => value == null);
 
-    List<String> contentTypes = [];
+        List<String> contentTypes = [];
 
-    String contentType = contentTypes.isNotEmpty ? contentTypes[0] : "application/json";
-    List<String> authNames = ["private"];
 
-    if(contentType.startsWith("multipart/form-data")) {
-      bool hasFields = false;
-      MultipartRequest mp = MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
-    }
-    else {
-    }
 
-    var response = await apiClient.invokeAPI(path,
-                                             'GET',
-                                             queryParams,
-                                             postBody,
-                                             headerParams,
-                                             formParams,
-                                             contentType,
-                                             authNames);
-    return response;
-  }
+            return _dio.request(
+            _path,
+            queryParameters: queryParams,
+            data: bodyData,
+            options: Options(
+            method: 'get'.toUpperCase(),
+            headers: headerParams,
+            contentType: contentTypes.isNotEmpty ? contentTypes[0] : "application/json",
+            ),
+            cancelToken: cancelToken,
+            ).then((response) {
 
-  /// Get funds
-  ///
-  /// 
-  Future<Funds> funds({ int a, String t }) async {
-    Response response = await fundsWithHttpInfo( a: a, t: t );
-    if(response.statusCode >= 400) {
-      throw ApiException(response.statusCode, _decodeBodyBytes(response));
-    } else if(response.body != null) {
-      return apiClient.deserialize(_decodeBodyBytes(response), 'Funds') as Funds;
-    } else {
-      return null;
-    }
-  }
+        var serializer = _serializers.serializerForType(Funds);
+        var data = _serializers.deserializeWith<Funds>(serializer, response.data);
 
-}
+            return Response<Funds>(
+                data: data,
+                headers: response.headers,
+                request: response.request,
+                redirects: response.redirects,
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage,
+                extra: response.extra,
+            );
+            });
+            }
+        }

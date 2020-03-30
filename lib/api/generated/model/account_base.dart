@@ -1,53 +1,24 @@
-part of openapi.api;
+        import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-class AccountBase {
-  
-  String name = null;
-  /* base asset */
-  String base = null;
-  AccountBase();
+part 'account_base.g.dart';
 
-  @override
-  String toString() {
-    return 'AccountBase[name=$name, base=$base, ]';
-  }
+abstract class AccountBase implements Built<AccountBase, AccountBaseBuilder> {
 
-  AccountBase.fromJson(Map<String, dynamic> json) {
-    if (json == null) return;
-    name = json['name'];
-    base = json['base'];
-  }
+    
+        @nullable
+    @BuiltValueField(wireName: r'name')
+    String get name;
+    /* base asset */
+        @nullable
+    @BuiltValueField(wireName: r'base')
+    String get base;
 
-  Map<String, dynamic> toJson() {
-    Map <String, dynamic> json = {};
-    if (name != null)
-      json['name'] = name;
-    if (base != null)
-      json['base'] = base;
-    return json;
-  }
+    // Boilerplate code needed to wire-up generated code
+    AccountBase._();
 
-  static List<AccountBase> listFromJson(List<dynamic> json) {
-    return json == null ? List<AccountBase>() : json.map((value) => AccountBase.fromJson(value)).toList();
-  }
+    factory AccountBase([updates(AccountBaseBuilder b)]) = _$AccountBase;
+    static Serializer<AccountBase> get serializer => _$accountBaseSerializer;
 
-  static Map<String, AccountBase> mapFromJson(Map<String, dynamic> json) {
-    var map = Map<String, AccountBase>();
-    if (json != null && json.isNotEmpty) {
-      json.forEach((String key, dynamic value) => map[key] = AccountBase.fromJson(value));
-    }
-    return map;
-  }
-
-  // maps a json object with a list of AccountBase-objects as value to a dart map
-  static Map<String, List<AccountBase>> mapListFromJson(Map<String, dynamic> json) {
-    var map = Map<String, List<AccountBase>>();
-     if (json != null && json.isNotEmpty) {
-       json.forEach((String key, dynamic value) {
-         map[key] = AccountBase.listFromJson(value);
-       });
-     }
-     return map;
-  }
 }
 

@@ -1,95 +1,60 @@
-part of openapi.api;
+            import 'package:coin_manager/api/generated/model/full_fund_all_of.dart';
+            import 'package:coin_manager/api/generated/model/fund.dart';
+        import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-class FullFund {
-  
-  int accId = null;
-  
-  int id = null;
-  
-  String asset = null;
-  /* < 0 if withdrawal */
-  num amount = null;
-  /* The value in the account's base currency */
-  num value = null;
-  /* timestamp's epoch in the user's timezone */
-  int at = null;
-  /* Fund type */
-  String typ = null;
-  //enum typEnum {  fm,  fs,  f,  };{
-  /* status */
-  String st = null;
-  //enum stEnum {  O,  C,  };{
-  /* the fee in asset */
-  num fee = null;
-  /* the id of the matching order from other account */
-  num ooid = null;
-  FullFund();
+part 'full_fund.g.dart';
 
-  @override
-  String toString() {
-    return 'FullFund[accId=$accId, id=$id, asset=$asset, amount=$amount, value=$value, at=$at, typ=$typ, st=$st, fee=$fee, ooid=$ooid, ]';
-  }
+abstract class FullFund implements Built<FullFund, FullFundBuilder> {
 
-  FullFund.fromJson(Map<String, dynamic> json) {
-    if (json == null) return;
-    accId = json['accId'];
-    id = json['id'];
-    asset = json['asset'];
-    amount = json['amount'];
-    value = json['value'];
-    at = json['at'];
-    typ = json['typ'];
-    st = json['st'];
-    fee = json['fee'];
-    ooid = json['ooid'];
-  }
+    
+        @nullable
+    @BuiltValueField(wireName: r'accId')
+    int get accId;
+    
+        @nullable
+    @BuiltValueField(wireName: r'id')
+    int get id;
+    
+        @nullable
+    @BuiltValueField(wireName: r'asset')
+    String get asset;
+    /* < 0 if withdrawal */
+        @nullable
+    @BuiltValueField(wireName: r'amount')
+    num get amount;
+    /* The value in the account's base currency */
+        @nullable
+    @BuiltValueField(wireName: r'value')
+    num get value;
+    /* timestamp's epoch in the user's timezone */
+        @nullable
+    @BuiltValueField(wireName: r'at')
+    int get at;
+    /* Fund type */
+        @nullable
+    @BuiltValueField(wireName: r'typ')
+    String get typ;
+        //enum typEnum {  fm,  fs,  f,  };
+    /* status */
+        @nullable
+    @BuiltValueField(wireName: r'st')
+    String get st;
+        //enum stEnum {  O,  C,  };
+    /* the fee in asset */
+        @nullable
+    @BuiltValueField(wireName: r'fee')
+    num get fee;
+    /* the id of the matching order from other account */
+        @nullable
+    @BuiltValueField(wireName: r'ooid')
+    num get ooid;
 
-  Map<String, dynamic> toJson() {
-    Map <String, dynamic> json = {};
-    if (accId != null)
-      json['accId'] = accId;
-    if (id != null)
-      json['id'] = id;
-    if (asset != null)
-      json['asset'] = asset;
-    if (amount != null)
-      json['amount'] = amount;
-    if (value != null)
-      json['value'] = value;
-    if (at != null)
-      json['at'] = at;
-    if (typ != null)
-      json['typ'] = typ;
-    if (st != null)
-      json['st'] = st;
-    if (fee != null)
-      json['fee'] = fee;
-    if (ooid != null)
-      json['ooid'] = ooid;
-    return json;
-  }
+    // Boilerplate code needed to wire-up generated code
+    FullFund._();
 
-  static List<FullFund> listFromJson(List<dynamic> json) {
-    return json == null ? List<FullFund>() : json.map((value) => FullFund.fromJson(value)).toList();
-  }
+    factory FullFund([updates(FullFundBuilder b)]) = _$FullFund;
+    static Serializer<FullFund> get serializer => _$fullFundSerializer;
 
-  static Map<String, FullFund> mapFromJson(Map<String, dynamic> json) {
-    var map = Map<String, FullFund>();
-    if (json != null && json.isNotEmpty) {
-      json.forEach((String key, dynamic value) => map[key] = FullFund.fromJson(value));
-    }
-    return map;
-  }
-
-  // maps a json object with a list of FullFund-objects as value to a dart map
-  static Map<String, List<FullFund>> mapListFromJson(Map<String, dynamic> json) {
-    var map = Map<String, List<FullFund>>();
-     if (json != null && json.isNotEmpty) {
-       json.forEach((String key, dynamic value) {
-         map[key] = FullFund.listFromJson(value);
-       });
-     }
-     return map;
-  }
 }
 

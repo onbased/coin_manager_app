@@ -1,0 +1,10 @@
+# Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
+targets:
+  $default:
+    builders:
+      json_serializable|json_serializable:
+        options:
+          nullable: true
+          include_if_null: true
+        generate_for:
+          - lib/api/generated/model/*.dart

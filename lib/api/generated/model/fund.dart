@@ -1,73 +1,40 @@
-part of openapi.api;
+        import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-class Fund {
-  
-  int accId = null;
-  
-  int id = null;
-  
-  String asset = null;
-  /* < 0 if withdrawal */
-  num amount = null;
-  /* The value in the account's base currency */
-  num value = null;
-  /* timestamp's epoch in the user's timezone */
-  int at = null;
-  Fund();
+part 'fund.g.dart';
 
-  @override
-  String toString() {
-    return 'Fund[accId=$accId, id=$id, asset=$asset, amount=$amount, value=$value, at=$at, ]';
-  }
+abstract class Fund implements Built<Fund, FundBuilder> {
 
-  Fund.fromJson(Map<String, dynamic> json) {
-    if (json == null) return;
-    accId = json['accId'];
-    id = json['id'];
-    asset = json['asset'];
-    amount = json['amount'];
-    value = json['value'];
-    at = json['at'];
-  }
+    
+        @nullable
+    @BuiltValueField(wireName: r'accId')
+    int get accId;
+    
+        @nullable
+    @BuiltValueField(wireName: r'id')
+    int get id;
+    
+        @nullable
+    @BuiltValueField(wireName: r'asset')
+    String get asset;
+    /* < 0 if withdrawal */
+        @nullable
+    @BuiltValueField(wireName: r'amount')
+    num get amount;
+    /* The value in the account's base currency */
+        @nullable
+    @BuiltValueField(wireName: r'value')
+    num get value;
+    /* timestamp's epoch in the user's timezone */
+        @nullable
+    @BuiltValueField(wireName: r'at')
+    int get at;
 
-  Map<String, dynamic> toJson() {
-    Map <String, dynamic> json = {};
-    if (accId != null)
-      json['accId'] = accId;
-    if (id != null)
-      json['id'] = id;
-    if (asset != null)
-      json['asset'] = asset;
-    if (amount != null)
-      json['amount'] = amount;
-    if (value != null)
-      json['value'] = value;
-    if (at != null)
-      json['at'] = at;
-    return json;
-  }
+    // Boilerplate code needed to wire-up generated code
+    Fund._();
 
-  static List<Fund> listFromJson(List<dynamic> json) {
-    return json == null ? List<Fund>() : json.map((value) => Fund.fromJson(value)).toList();
-  }
+    factory Fund([updates(FundBuilder b)]) = _$Fund;
+    static Serializer<Fund> get serializer => _$fundSerializer;
 
-  static Map<String, Fund> mapFromJson(Map<String, dynamic> json) {
-    var map = Map<String, Fund>();
-    if (json != null && json.isNotEmpty) {
-      json.forEach((String key, dynamic value) => map[key] = Fund.fromJson(value));
-    }
-    return map;
-  }
-
-  // maps a json object with a list of Fund-objects as value to a dart map
-  static Map<String, List<Fund>> mapListFromJson(Map<String, dynamic> json) {
-    var map = Map<String, List<Fund>>();
-     if (json != null && json.isNotEmpty) {
-       json.forEach((String key, dynamic value) {
-         map[key] = Fund.listFromJson(value);
-       });
-     }
-     return map;
-  }
 }
 
