@@ -33,5 +33,49 @@
                 }
             },
         },
+        {
+            "label": "Generate currency database",
+            "command": "(echo \"part of 'money.dart';\"; echo; echo 'Map<String, Map<String, double>> historicalExchangeRates = {'; curl -sSf 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml' | xmllint --format - | sed -r 's!..<Cube currency=(\"[A-Z]+\") rate=\"([0-9.]+)\"/>!\\1: \\2,!' | grep -vEe '</?gesmes' -e '^  </?Cube>' -e '<\\?xml version=\\\"' | sed -r 's!..<Cube time=(\"[0-9-]+\")>!\\1: \\{!' | sed -r 's!..</Cube>!\\},!'; echo '};') > ${workspaceFolder}/lib/utils/money.g.dart",
+            "type": "shell",
+            "args": [],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "statusbar": {
+                    "hide": true
+                }
+            },
+        },
+        {
+            "label": "br_build",
+            "type": "shell",
+            "command": "flutter packages pub run build_runner build --verbose --delete-conflicting-outputs",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": "$dart-pub-build_runner"
+        },
+        {
+            "label": "fclean",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "flutter clean"
+        },
+        {
+            "label": "br_clean",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true
+                }
+            },
+            "command": "flutter packages pub run build_runner clean"
+        },
     ]
 }

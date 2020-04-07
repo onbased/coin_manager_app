@@ -11,5 +11,6 @@
 		"files.trimTrailingWhitespace": true,
 		"dart.flutterTrackWidgetCreation": true,
 		"dart.flutterRunLogFile": "run_flutter.log",
+		"dart.flutterSdkPath": "/Users/roden/bin/flutter.full",
 	},
 }
