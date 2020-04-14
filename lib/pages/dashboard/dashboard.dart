@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'widgets/portfolio.dart';
 import 'widgets/portfolio_grouped_bar_chart.dart';
 import 'widgets/portfolio_pie_chart.dart';
+import 'widgets/portfolio_total_line_chart.dart';
 
 class DashboardPage extends StatefulWidget {
   DashboardPage({Key key}) : super(key: key);
@@ -48,8 +49,10 @@ class _DashboardPageView
           _buildDashboardCard(PortfolioWidget()),
           _buildDashboardCard(PortfolioPieChartWidget()),
           _buildDashboardCard(PortfolioGroupedBarChartWidget()),
+          _buildDashboardCard(PortfolioTotalLineChartWidget()),
         ],
         staggeredTiles: [
+          StaggeredTile.fit(2),
           StaggeredTile.fit(2),
           StaggeredTile.fit(2),
           StaggeredTile.fit(2),
