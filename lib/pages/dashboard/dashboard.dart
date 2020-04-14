@@ -26,14 +26,10 @@ class _DashboardPageView
     extends StatefulView<DashboardPage, _DashboardPageController> {
   _DashboardPageView(_DashboardPageController state) : super(state);
 
-  Widget _buildDashboardCard(Key key) {
+  Widget _buildDashboardCard(Widget child) {
     return Card(
       elevation: 5,
-      // child: ListView.builder(
-      //   itemCount: 2,
-      //   itemBuilder: (context, index) {},
-      // ),
-      child: PortfolioWidget(key: key),
+      child: child,
     );
   }
 
@@ -45,20 +41,12 @@ class _DashboardPageView
         title: Text("Dashboard"),
       ),
       body: StaggeredGridView.extent(
-        maxCrossAxisExtent: 550,
+        maxCrossAxisExtent: 450,
         children: <Widget>[
-          _buildDashboardCard(ValueKey(1)),
-          // _buildDashboardCard(ValueKey(2)),
-          // _buildDashboardCard(ValueKey(3)),
-          // _buildDashboardCard(ValueKey(4)),
-          // _buildDashboardCard(ValueKey(5)),
+          _buildDashboardCard(PortfolioWidget()),
         ],
         staggeredTiles: [
           StaggeredTile.fit(2),
-          // StaggeredTile.fit(2),
-          // StaggeredTile.fit(2),
-          // StaggeredTile.fit(2),
-          // StaggeredTile.fit(2),
         ],
       ),
     );
