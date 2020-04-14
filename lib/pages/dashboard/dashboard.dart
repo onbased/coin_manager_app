@@ -1,6 +1,10 @@
 import 'package:coin_manager/imports.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import 'widgets/portfolio_kchart.dart';
+import 'widgets/portfolio.dart';
+import 'widgets/portfolio_grouped_bar_chart.dart';
+import 'widgets/portfolio_pie_chart.dart';
+import 'widgets/portfolio_total_line_chart.dart';
 
 class DashboardPage extends StatefulWidget {
   DashboardPage({Key key}) : super(key: key);
@@ -25,6 +29,13 @@ class _DashboardPageView
     extends StatefulView<DashboardPage, _DashboardPageController> {
   _DashboardPageView(_DashboardPageController state) : super(state);
 
+  Widget _buildDashboardCard(Widget child) {
+    return Card(
+      elevation: 5,
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Write UI code here
@@ -32,7 +43,21 @@ class _DashboardPageView
       appBar: AppBar(
         title: Text("Dashboard"),
       ),
-      body: PortfolioCandlestickChartWidget(),
+      body: StaggeredGridView.extent(
+        maxCrossAxisExtent: 450,
+        children: <Widget>[
+          _buildDashboardCard(PortfolioWidget()),
+          _buildDashboardCard(PortfolioPieChartWidget()),
+          _buildDashboardCard(PortfolioGroupedBarChartWidget()),
+          _buildDashboardCard(PortfolioTotalLineChartWidget()),
+        ],
+        staggeredTiles: [
+          StaggeredTile.fit(2),
+          StaggeredTile.fit(2),
+          StaggeredTile.fit(2),
+          StaggeredTile.fit(2),
+        ],
+      ),
     );
   }
 }
