@@ -27,7 +27,7 @@ class _LoginPageController extends State<LoginPage> {
     LoginReq loginReq = LoginReq()
       ..user = userNameController.text
       ..password = passwordController.text;
-    await UserApi().loginPost(loginReq: loginReq);
+    // await UserApi().loginPost(loginReq: loginReq);
 
     await Navigator.of(context)
         .push<void>(MaterialPageRoute(builder: (ctx) => DashboardPage()));
