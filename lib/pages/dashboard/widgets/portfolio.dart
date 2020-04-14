@@ -63,8 +63,9 @@ class _PortfolioWidgetController extends State<PortfolioWidget> {
   void initState() {
     super.initState();
 
-    portfolio =
-        Future.wait([TradeApi().openTrades(-4)]).then(mergeAccountOrders);
+    portfolio = Future.wait([TradeApi().openTrades(-4)])
+        .then(mergeAccountOrders)
+        .catchError(print);
   }
 
   Future<Portfolio> mergeAccountOrders(
@@ -179,7 +180,7 @@ class _PortfolioWidgetView
                     DataColumn(label: Text("Profit")),
                     DataColumn(label: Text("Sum")),
                   ], rows: [
-                    for (Trade trade in data.details
+                    for (Trade trade in (data?.details ?? [])
                         .expand((list) => [list.total] + list.trades))
                       DataRow(cells: [
                         DataCell(Text(trade.coin.currency.code)),
