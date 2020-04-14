@@ -2,6 +2,7 @@ import 'package:coin_manager/imports.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'widgets/portfolio.dart';
+import 'widgets/portfolio_grouped_bar_chart.dart';
 import 'widgets/portfolio_pie_chart.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -46,8 +47,10 @@ class _DashboardPageView
         children: <Widget>[
           _buildDashboardCard(PortfolioWidget()),
           _buildDashboardCard(PortfolioPieChartWidget()),
+          _buildDashboardCard(PortfolioGroupedBarChartWidget()),
         ],
         staggeredTiles: [
+          StaggeredTile.fit(2),
           StaggeredTile.fit(2),
           StaggeredTile.fit(2),
         ],
